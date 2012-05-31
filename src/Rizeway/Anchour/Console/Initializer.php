@@ -7,6 +7,9 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use Rizeway\Anchour\Step\StepFactory;
+use Rizeway\Anchour\Step\StepRunner; 
+
 class Initializer 
 {
     public function initialize(Application $console, $anchour_config)
@@ -20,7 +23,17 @@ class Initializer
                 ->register($name)
                 ->setDescription($description)
                 ->setCode(function (InputInterface $input, OutputInterface $output) use($steps) {
-                    var_dump($steps);
+                    
+                    $factory = new StepFactory();
+                    $step_objects = array();
+                    foreach ($steps as $step) {
+                        $step_objects[] = $factory->build($step);
+                    }
+
+                    if (count($step_objects)) {
+                        $runner = new StepRunner($step_objects);
+                        $runner->run();
+                    }
                 });
         }
     }
