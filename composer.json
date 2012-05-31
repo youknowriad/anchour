@@ -1,0 +1,29 @@
+{
+    "name": "anchour",
+    "type": "script",
+    "description": "Toolkit for deploying web applications",
+    "keywords": ["web", "deploy", "php"],
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Riad Benguella",
+            "email": "riad@rizeway.com",
+            "homepage": "http://riadbenguella.com"
+        },
+        {
+            "name": "Julien Bianchi",
+            "email": "contact@jubianchi.fr",
+            "homepage": "http://jubianchi.fr"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "Rizeway\\Anchour": "src/"
+        }
+    },
+    "require": {
+        "php": ">=5.3.2",
+        "symfony/yaml": "2.0.14",
+        "symfony/console": "2.0.14"
+    }
+}
