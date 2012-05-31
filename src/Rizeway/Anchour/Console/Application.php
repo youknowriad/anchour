@@ -16,7 +16,7 @@ class Application extends BaseApplication
         parent::__construct('Anchour');
 
         // Checking the anchour config file
-        $anchour_config_file = exec('pwd').'/.anchour';
+        $anchour_config_file = getcwd().'/.anchour';
         if (!file_exists($anchour_config_file))
         {
             throw new \Exception('The .anchour config files was not found in the current directory');
