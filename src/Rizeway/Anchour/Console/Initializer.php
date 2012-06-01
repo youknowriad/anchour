@@ -43,7 +43,7 @@ class Initializer
 
                     if (count($step_objects)) {
                         $runner = new StepRunner($step_objects);
-                        $runner->run();
+                        $runner->run($output);
                     }
                 });
         }

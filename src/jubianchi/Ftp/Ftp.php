@@ -1,12 +1,20 @@
 <?php
 namespace jubianchi\Ftp;
 
+use Symfony\Component\Console\Output\OutputInterface;
+
 class Ftp 
 {
     /**
      * @var resource
      */
     private $connection;
+
+
+    /**
+     * @var \Symfony\Component\Console\Output\OutputInterface
+     */
+    private $output;
 
     /**
      * @param string $host
@@ -30,7 +38,7 @@ class Ftp
      */
     public function connect($host, $login, $password, $port = 21, $timeout = 90) 
     {
-        if (false === is_resource($this->connection = ftp_connect($host, $port, $timeout))) 
+        if (false === is_resource($this->connection = \ftp_connect($host, $port, $timeout)))
         {
             throw new \RuntimeException('FTP connection has failed');
         }
@@ -71,9 +79,7 @@ class Ftp
      * @return bool
      */
     public function createDirectory($directory) 
-    {        
-        echo 'Creating ' . $directory . PHP_EOL;
-
+    {
         if (false === ftp_mkdir($this->getConnection(), $directory))
         {
             $cwd = ftp_pwd($this->getConnection());
@@ -81,13 +87,13 @@ class Ftp
             if (false === ftp_chdir($this->getConnection(), $directory))
             {
                 throw new \RuntimeException(sprintf('Could not create the %s directory', $directory));
-            } 
-            else 
-            {
-                echo 'Directory ' . $directory . ' already exists' . PHP_EOL;
-            }        
+            }
 
             ftp_chdir($this->getConnection(), $cwd);
+        }
+        else
+        {
+            $this->log('Created directory <info>' . $directory . '</info>');
         }
 
         return true;
@@ -100,8 +106,6 @@ class Ftp
      */
     public function createDirectoryRecursive($directory) 
     {
-        echo 'Recursively creating ' . $directory . PHP_EOL;
-
         $parts = explode(DIRECTORY_SEPARATOR, trim($directory, '/'));
 
         $path = '';    
@@ -124,8 +128,8 @@ class Ftp
      * @return bool
      */
     public function uploadFile($local, $distant) 
-    {                    
-        echo 'Uploading file ' . $local . ' to ' . $distant . PHP_EOL;
+    {
+        $this->log('Uploading file <info>' . $local . '</info> to <info>' . $distant . '</info>');
 
         if (false === ftp_put($this->getConnection(), $distant, $local, FTP_BINARY))
         {            
@@ -145,7 +149,7 @@ class Ftp
      */
     public function uploadDirectory($local, $distant) 
     {
-        echo 'Uploading directory ' . $local . ' to ' . $distant . PHP_EOL;
+        $this->log('Uploading directory <info>' . $local . '</info> to <info>' . $distant . '</info>');
 
         $this->createDirectoryRecursive($distant);
 
@@ -184,5 +188,32 @@ class Ftp
         }
 
         return $this->connection;
+    }
+
+    /**
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     */
+    public function setOutput(OutputInterface $output)
+    {
+        $this->output = $output;
+    }
+
+    /**
+     * @return \Symfony\Component\Console\Output\OutputInterface
+     */
+    public function getOutput()
+    {
+        return $this->output;
+    }
+
+    /**
+     * @param string $message
+     */
+    public function log($message)
+    {
+        if (false === is_null($this->getOutput()))
+        {
+            $this->getOutput()->writeln($message);
+        }
     }
 }

@@ -5,6 +5,7 @@ namespace Rizeway\Anchour\Step\Steps;
 use Rizeway\Anchour\Step\Step;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use OOSSH\SSH2\Connection;
 use OOSSH\SSH2\Authentication\Password;
 
@@ -24,7 +25,7 @@ class StepSsh extends Step
         ));
     }
 
-    public function run()
+    public function run(OutputInterface $output)
     {
         $connection = new Connection($this->options['host'], $this->options['port']);
         $connection
@@ -33,8 +34,9 @@ class StepSsh extends Step
 
         foreach ($this->options['commands'] as $command)
         {
-            $connection->exec($command, function($stdio, $stderr) {
-              echo $stdio;
+
+            $connection->exec($command, function($stdio, $stderr) use($output) {
+              $output->write($stdio);
 
               if('' !== $stderr)
               {
