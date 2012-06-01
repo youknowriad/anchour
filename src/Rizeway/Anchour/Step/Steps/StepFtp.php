@@ -13,6 +13,16 @@ use jubianchi\Ftp\Ftp;
 
 class StepFtp extends Step
 {
+    public function __construct(array $options = array())
+    {
+        if(false === extension_loaded('ftp'))
+        {
+            throw new \RuntimeException('FTP extension is not loaded');
+        }
+
+        parent::__construct($options);
+    }
+
     protected function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setRequired(array(

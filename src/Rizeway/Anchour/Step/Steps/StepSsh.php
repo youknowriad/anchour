@@ -12,6 +12,19 @@ use OOSSH\SSH2\Authentication\Password;
 
 class StepSsh extends Step
 {
+    public function __construct(array $options = array())
+    {
+        $output = $status = null;
+        exec('which ssh', $output, $status);
+
+        if(0 !== $status)
+        {
+            throw new \RuntimeException('ssh command is not available');
+        }
+
+        parent::__construct($options);
+    }
+
     protected function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setRequired(array(

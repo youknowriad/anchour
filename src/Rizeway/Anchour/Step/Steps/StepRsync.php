@@ -9,6 +9,20 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class StepRsync extends Step
 {
+    public function __construct(array $options = array())
+    {
+        $output = $status = null;
+        exec('which rsync', $output, $status);
+
+        if(0 !== $status)
+        {
+            throw new \RuntimeException('rsync command is not available');
+        }
+
+        parent::__construct($options);
+    }
+
+
     protected function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setRequired(array(

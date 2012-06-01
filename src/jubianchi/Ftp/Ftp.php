@@ -25,6 +25,11 @@ class Ftp
      */
     public function __construct($host, $login, $password, $port = 21, $timeout = 90) 
     {
+        if(false === extension_loaded('ftp'))
+        {
+            throw new \RuntimeException('FTP extension is not loaded');
+        }
+
         $this->connect($host, $login, $password, $port, $timeout);
     }
 

@@ -10,6 +10,19 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class StepGit extends StepSsh
 {
+    public function __construct(array $options = array())
+    {
+        $output = $status = null;
+        exec('which git', $output, $status);
+
+        if(0 !== $status)
+        {
+            throw new \RuntimeException('git command is not available');
+        }
+
+        parent::__construct($options);
+    }
+
     protected function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         parent::setDefaultOptions($resolver);
