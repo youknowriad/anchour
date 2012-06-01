@@ -17,6 +17,6 @@ class StepEcho extends Step
 
     public function run()
     {
-        echo $this->options['message'];
+        fwrite(STDOUT, $this->options['message'] . PHP_EOL);
     }
 }
