@@ -18,7 +18,8 @@
     ],
     "autoload": {
         "psr-0": {
-            "Rizeway\\Anchour": "src/"
+            "Rizeway\\Anchour": "src/",
+            "jubianchi\\Ftp": "src/"
         }
     },
     "require": {

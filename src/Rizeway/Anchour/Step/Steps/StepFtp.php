@@ -2,9 +2,12 @@
 
 namespace Rizeway\Anchour\Step\Steps;
 
-use Rizeway\Anchour\Step\Step;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+
+use Rizeway\Anchour\Step\Step;
+
+use jubianchi\Ftp\Ftp;
 
 class StepFtp extends Step
 {
@@ -24,81 +27,11 @@ class StepFtp extends Step
 
     public function run()
     {
-        $connection = ftp_connect($this->options['host']);
-        $login      = ftp_login($connection, $this->options['username'], $this->options['password']);
+        error_reporting(($level = error_reporting()) ^ E_WARNING);
 
-        if (!$connection || !$login) {
-            throw new \Exception('FTP connection has failed');
-        }
+        $ftp = new Ftp($this->options['host'], $this->options['username'], $this->options['password']);
+        $ftp->uploadDirectory(getcwd() . '/' . $this->options['local_dir'], $this->options['remote_dir']);     
 
-        $root = getcwd().'/'.$this->options['local_dir'].'/';
-        $files = $this->getFilesInFolder($root);
-
-        if (count($files)) {
-            $this->createFtpFolderRecursively($connection, $this->options['remote_dir']);
-            foreach ($files as $file) {
-                $remote_file = str_replace($root, '', $file);
-                $this->createFtpFolderRecursively($connection, dirname($remote_file));
-                ftp_chdir($connection, $this->options['remote_dir']);
-                $movefile = ftp_put($connection, $remote_file, $file, FTP_BINARY);
-
-                if (!$movefile) {
-                    throw new \Exception(sprintf('FTP upload has failed : %s', $file));
-                }
-            }
-        }
-    }
-
-    /**
-     * get All Files In a Folder
-     * @param  string $folder Folder Path
-     * @return string[]
-     */
-    protected function getFilesInFolder($folder)
-    {
-        $files = array();
-        $handle = opendir($folder);
-        while (($file = readdir($handle)) !== false) {
-            if (($file != '.') && ($file != '..')) {
-                if (is_dir($folder . $file)) {
-                    $files = array_merge($files, $this->getFilesInFolder($folder . $file . '/'));
-                } else {
-                    $files[] = $folder . $file;
-                }
-            }
-        }
-        closedir($handle);
-
-        return $files;
-    }
-
-    /**
-     * Créate recursively an FTP Folder
-     * @param  integer $con_id The FTP Stream
-     * @param  string $path Folder path
-     * @return bool
-     */
-    protected function createFtpFolderRecursively($con_id, $path)
-    {
-        $parts = explode("/",$path);
-        $return = true;
-        $fullpath = "";
-        foreach($parts as $part){
-            if(empty($part)){
-                $fullpath .= "/";
-                continue;
-            }
-            $fullpath .= $part."/";
-            if(@ftp_chdir($con_id, $fullpath)){
-               ftp_chdir($con_id, $fullpath);
-            }else{
-                if(@ftp_mkdir($con_id, $part)){
-                    ftp_chdir($con_id, $part);
-                }else{
-                    $return = false;
-                }
-            }
-        }
-        return $return;
-    }
+        error_reporting($level);
+    }    
 }
