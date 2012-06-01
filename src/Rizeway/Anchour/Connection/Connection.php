@@ -21,4 +21,11 @@ abstract class Connection implements ConnectionInterface
      * @param OptionsResolverInterface $resolver 
      */
     abstract protected function setDefaultOptions(OptionsResolverInterface $resolver);
+
+    /**
+     * @abstract
+     *
+     * @return string
+     */
+    abstract public function __toString();
 }

@@ -48,4 +48,14 @@ class ConnectionFtp extends Connection
     {
         return call_user_func_array(array($this->connection, $name), $args);
     }
+
+    public function __toString()
+    {
+        return sprintf(
+            '%s@%s%s',
+            $this->options['username'],
+            $this->options['host'],
+            $this->options['port'] ? ':' . $this->options['port'] : ''
+        );
+    }
 }
