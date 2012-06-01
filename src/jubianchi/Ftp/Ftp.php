@@ -216,4 +216,14 @@ class Ftp
             $this->getOutput()->writeln($message);
         }
     }
+
+    public function isConnected()
+    {
+        return (true === is_resource($this->getConnection()));
+    }
+
+    public function __destruct()
+    {
+        ftp_close($this->getConnection());
+    }
 }

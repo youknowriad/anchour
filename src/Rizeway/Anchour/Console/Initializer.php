@@ -10,6 +10,8 @@ use Symfony\Component\Yaml\Yaml;
 
 use Rizeway\Anchour\Step\StepFactory;
 use Rizeway\Anchour\Step\StepRunner; 
+use Rizeway\Anchour\Connection\ConnectionFactory;
+use Rizeway\Anchour\Connection\ConnectionHolder;
 
 class Initializer 
 {
@@ -29,11 +31,12 @@ class Initializer
         {
             $description = isset($command_config['description']) ? $command_config['description'] : $name;
             $steps = isset($command_config['steps']) ? $command_config['steps'] : array();
+            $connections = isset($command_config['connections']) ? $command_config['connections'] : array();
 
             $console
                 ->register($name)
                 ->setDescription($description)
-                ->setCode(function (InputInterface $input, OutputInterface $output) use($steps) {
+                ->setCode(function (InputInterface $input, OutputInterface $output) use($steps, $connections) {
                     
                     $factory = new StepFactory();
                     $step_objects = array();
@@ -41,8 +44,14 @@ class Initializer
                         $step_objects[] = $factory->build($step);
                     }
 
+                    $factory = new ConnectionFactory();
+                    $connection_objects = new ConnectionHolder();
+                    foreach ($connections as $name => $connection) {
+                        $connection_objects[$name] = $factory->build($connection);
+                    }
+
                     if (count($step_objects)) {
-                        $runner = new StepRunner($step_objects);
+                        $runner = new StepRunner($step_objects, $connection_objects);
                         $runner->run($output);
                     }
                 });
