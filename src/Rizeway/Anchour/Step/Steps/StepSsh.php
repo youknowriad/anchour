@@ -33,7 +33,14 @@ class StepSsh extends Step
 
         foreach ($this->options['commands'] as $command)
         {
-            $connection->exec($command, function($stdio, $stderr) { echo $stdio; });
+            $connection->exec($command, function($stdio, $stderr) {
+              echo $stdio;
+
+              if('' !== $stderr)
+              {
+                throw new \RuntimeException($stderr);
+              }
+            });
         }
     }
 }
