@@ -47,6 +47,7 @@ class StepRsync extends Step
                 $connections[$this->options['source_connection']]->getHost(),
                 $this->options['source_dir']
             );
+
             $destination = $this->options['destination_dir'];
         } else {
             $source = $this->options['source_dir'];
@@ -59,6 +60,6 @@ class StepRsync extends Step
             );
         }
 
-        passthru(sprintf('rsync %s -e "ssh -i %s" %s %s', $this->options['key_file'], $this->options['cli_args'], $source, $destination));
+        passthru(sprintf('rsync %s -e "ssh -i %s" %s %s', $this->options['cli_args'], $this->options['key_file'], $source, $destination));
     }
 }
