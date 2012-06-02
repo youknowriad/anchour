@@ -3,8 +3,10 @@
 namespace Rizeway\Anchour\Step\Steps;
 
 use Rizeway\Anchour\Step\Step;
+use Rizeway\Anchour\Connection\ConnectionHolder;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class StepEcho extends Step
 {
@@ -15,8 +17,8 @@ class StepEcho extends Step
         ));
     }
 
-    public function run()
+    public function run(OutputInterface $output, ConnectionHolder $connections)
     {
-        fwrite(STDOUT, $this->options['message'] . PHP_EOL);
+        $output->writeln($this->options['message']);
     }
 }
