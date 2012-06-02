@@ -9,11 +9,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ConnectionMysql extends Connection
 {
-    /**
-     * @var \OOSSH\SSH2\Connection
-     */
-    private $connection;
-
     protected function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setRequired(array(
@@ -55,11 +50,6 @@ class ConnectionMysql extends Connection
     public function getDatabase()
     {
         return $this->options['database'];
-    }
-
-    public function __call($name, $args)
-    {
-        return call_user_func_array(array($this->connection, $name), $args);
     }
 
     public function __toString()

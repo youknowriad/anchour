@@ -20,7 +20,8 @@ class StepPhar extends Step
 
         $resolver->setDefaults(array(
             'index' => null,
-            'output' => '.'
+            'output' => '.',
+            'regexp' => null
         ));
     }
 
@@ -32,7 +33,7 @@ class StepPhar extends Step
 
         $directory = realpath($this->options['directory']);
         $output->writeln(sprintf('Adding directory <info>%s</info>', $directory));
-        $phar->buildFromDirectory($directory);
+        $phar->buildFromDirectory($directory, $this->options['regexp']);
 
         $stub = realpath($this->options['stub']);
         $index = null;
