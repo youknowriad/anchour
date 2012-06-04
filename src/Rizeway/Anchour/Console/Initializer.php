@@ -55,6 +55,34 @@ class Initializer
                         $runner->run($output);
                     }
                 });
+
+            $console
+                ->register('init')
+                ->setDescription('Create a default .anchour file')
+                ->addOption('force', 'f', InputOption::VALUE_NONE)
+                ->setCode(function(InputInterface $input, OutputInterface $output) {
+                    $template = <<<YAML
+#Here you can define your targets
+target:
+    connections:
+        #Here you can define your connections
+
+    steps:
+        #Here you can define your steps
+        -
+            type: "echo"
+            options:
+                message: "This is a default <info>echo</info> step"
+YAML;
+
+                    if (file_exists('.anchour') && !$input->getOption('force'))
+                    {
+                      throw new \RuntimeException('File .anchour already exists. To replace it, use the --force/-f option');
+                    }
+
+                    $file = new \SplFileObject('.anchour', 'w+');
+                    $file->fwrite($template);
+                });
         }
     }
 }
