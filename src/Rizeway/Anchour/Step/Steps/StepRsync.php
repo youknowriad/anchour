@@ -60,6 +60,22 @@ class StepRsync extends Step
             );
         }
 
-        passthru(sprintf('rsync %s -e "ssh -i %s" %s %s', $this->options['cli_args'], $this->options['key_file'], $source, $destination));
+        $status = 0;
+        exec(
+          sprintf(
+            'rsync %s -e "ssh -i %s" %s %s 2>&1',
+            $this->options['cli_args'],
+            $this->options['key_file'],
+            $source,
+            $destination
+          ),
+          $output,
+          $status
+        );
+
+        if (0 !== $status)
+        {
+          throw new \RuntimeException(implode(PHP_EOL, $output));
+        }
     }
 }
