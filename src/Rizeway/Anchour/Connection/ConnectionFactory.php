@@ -2,6 +2,8 @@
 
 namespace Rizeway\Anchour\Connection;
 
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
 class ConnectionFactory
 {
     /**
@@ -25,6 +27,6 @@ class ConnectionFactory
 
         $options = isset($config['options']) ? $config['options'] : array();
 
-        return new $class($options);
+        return new $class(new OptionsResolver(), $options);
     }
 }

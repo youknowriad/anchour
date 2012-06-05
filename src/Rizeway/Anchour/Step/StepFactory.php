@@ -2,7 +2,9 @@
 
 namespace Rizeway\Anchour\Step;
 
-class StepFactory
+use jubianchi\Adapter\Adaptable;
+
+class StepFactory extends Adaptable
 {
     /**
      * Build a step from a conf array
@@ -14,17 +16,22 @@ class StepFactory
     {
         if (!isset($config['type']))
         {
-            throw new \Exception('The step type is required');
+            throw new \RuntimeException('The step type is required');
         }
 
         $class = 'Rizeway\Anchour\Step\Steps\Step'.ucfirst($config['type']);
-        if (!class_exists($class))
+        if (!$this->getAdapter()->class_exists($class))
         {
-            throw new \Exception(sprintf('The step %s was not found', $config['type']));
+            throw new \RuntimeException(sprintf('The step %s was not found', $config['type']));
         }
 
         $options = isset($config['options']) ? $config['options'] : array();
 
-        return new $class($options);
+        return $this->getInstance($class, $options);
+    }
+
+    public function getInstance($class, $options) 
+    {
+        return new $class(new \Symfony\Component\OptionsResolver\OptionsResolver(), $options);
     }
 }

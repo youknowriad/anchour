@@ -13,12 +13,12 @@ class ConnectionMysql extends Connection
     {
         $resolver->setRequired(array(
             'host',
-            'username',
-            'password',
+            'username',            
             'database'
         ));
 
         $resolver->setDefaults(array(
+            'password' => '',
             'port' => '3306'
         ));
     }

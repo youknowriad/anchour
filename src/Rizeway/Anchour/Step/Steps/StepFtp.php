@@ -2,7 +2,6 @@
 
 namespace Rizeway\Anchour\Step\Steps;
 
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -13,14 +12,14 @@ use jubianchi\Ftp\Ftp;
 
 class StepFtp extends Step
 {
-    public function __construct(array $options = array())
+    public function __construct(OptionsResolverInterface $resolver, array $options = array())
     {
         if(false === extension_loaded('ftp'))
         {
             throw new \RuntimeException('FTP extension is not loaded');
         }
 
-        parent::__construct($options);
+        parent::__construct($resolver, $options);
     }
 
     protected function setDefaultOptions(OptionsResolverInterface $resolver)

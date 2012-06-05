@@ -3,7 +3,10 @@ namespace jubianchi\Ftp;
 
 use Symfony\Component\Console\Output\OutputInterface;
 
-class Ftp 
+use jubianchi\Adapter\Adaptable;
+use jubianchi\Adapter\AdapterInterface;
+
+class Ftp extends Adaptable
 {
     /**
      * @var resource
@@ -23,14 +26,14 @@ class Ftp
      * @param int    $port
      * @param int    $timeout
      */
-    public function __construct($host, $login, $password, $port = 21, $timeout = 90) 
+    public function __construct(AdapterInterface $adapter = null) 
     {
-        if(false === extension_loaded('ftp'))
+        $this->setAdapter($adapter);
+
+        if(false === $this->getAdapter()->extension_loaded('ftp'))
         {
             throw new \RuntimeException('FTP extension is not loaded');
-        }
-
-        $this->connect($host, $login, $password, $port, $timeout);
+        }        
     }
 
     /**
@@ -43,7 +46,7 @@ class Ftp
      */
     public function connect($host, $login, $password, $port = 21, $timeout = 90) 
     {
-        if (false === is_resource($this->connection = \ftp_connect($host, $port, $timeout)))
+        if (false === $this->getAdapter()->is_resource($this->connection = $this->getAdapter()->ftp_connect($host, $port, $timeout)))
         {
             throw new \RuntimeException('FTP connection has failed');
         }
@@ -58,6 +61,8 @@ class Ftp
 
             throw $exc;
         }
+
+        return true;
     }
 
     /**
@@ -70,7 +75,7 @@ class Ftp
      */
     public function login($login, $password) 
     {
-        if (false === ftp_login($this->getConnection(), $login, $password)) 
+        if (false === $this->getAdapter()->ftp_login($this->getConnection(), $login, $password)) 
         {
             throw new \RuntimeException('Could not login with the given crednetials');
         }
@@ -85,23 +90,23 @@ class Ftp
      */
     public function createDirectory($directory) 
     {
-        if (false === ftp_mkdir($this->getConnection(), $directory))
+        if (false === $this->directoryExists($directory))
         {
-            $cwd = ftp_pwd($this->getConnection());
-
-            if (false === ftp_chdir($this->getConnection(), $directory))
-            {
+            if(false === $this->getAdapter()->ftp_mkdir($this->getConnection(), $directory)) {
                 throw new \RuntimeException(sprintf('Could not create the %s directory', $directory));
             }
-
-            ftp_chdir($this->getConnection(), $cwd);
-        }
-        else
-        {
-            $this->log('Created directory <info>' . $directory . '</info>');
-        }
+        }        
 
         return true;
+    }
+
+    public function directoryExists($directory) 
+    {
+        $cwd = $this->getAdapter()->ftp_pwd($this->getConnection());
+        $exists = $this->getAdapter()->ftp_chdir($this->getConnection(), $directory);            
+        $this->getAdapter()->ftp_chdir($this->getConnection(), $cwd);   
+
+        return $exists;
     }
 
     /**
@@ -136,7 +141,7 @@ class Ftp
     {
         $this->log('Uploading file <info>' . $local . '</info> to <info>' . $distant . '</info>');
 
-        if (false === ftp_put($this->getConnection(), $distant, $local, FTP_BINARY))
+        if (false === $this->getAdapter()->ftp_put($this->getConnection(), $distant, $local, FTP_BINARY))
         {            
             throw new \RuntimeException(sprintf('Could not send the %s local file to %s', $local, $distant));
         }
@@ -187,11 +192,6 @@ class Ftp
      */
     public function getConnection() 
     {
-        if (true === is_null($this->connection))
-        {    
-            throw new \RuntimeException('You are not connected to any FTP server');
-        }
-
         return $this->connection;
     }
 
@@ -224,11 +224,11 @@ class Ftp
 
     public function isConnected()
     {
-        return (true === is_resource($this->getConnection()));
+        return (true === $this->getAdapter()->is_resource($this->getConnection()));
     }
 
     public function __destruct()
     {
-        ftp_close($this->getConnection());
+        $this->getAdapter()->ftp_quit($this->getConnection());
     }
 }

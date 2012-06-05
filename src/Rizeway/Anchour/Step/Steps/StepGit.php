@@ -4,13 +4,12 @@ namespace Rizeway\Anchour\Step\Steps;
 
 use Rizeway\Anchour\Step\Step;
 use Rizeway\Anchour\Connection\ConnectionHolder;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class StepGit extends StepSsh
 {
-    public function __construct(array $options = array())
+    public function __construct(OptionsResolverInterface $resolver, array $options = array())
     {
         $output = $status = null;
         exec('which git', $output, $status);
@@ -20,7 +19,7 @@ class StepGit extends StepSsh
             throw new \RuntimeException('git command is not available');
         }
 
-        parent::__construct($options);
+        parent::__construct($resolver, $options);
     }
 
     protected function setDefaultOptions(OptionsResolverInterface $resolver)

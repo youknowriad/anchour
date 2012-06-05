@@ -9,7 +9,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class StepRsync extends Step
 {
-    public function __construct(array $options = array())
+    public function __construct(OptionsResolverInterface $resolver, array $options = array())
     {
         $output = $status = null;
         exec('which rsync', $output, $status);
@@ -19,7 +19,7 @@ class StepRsync extends Step
             throw new \RuntimeException('rsync command is not available');
         }
 
-        parent::__construct($options);
+        parent::__construct($resolver, $options);
     }
 
 
@@ -34,7 +34,7 @@ class StepRsync extends Step
             'destination_connection' => null,
             'source_dir' => null,
             'destination_dir' => null,
-            'cli_args' => '-avz'
+            'cli_args' => '-avz --progress'
         ));
     }
 
@@ -61,7 +61,7 @@ class StepRsync extends Step
         }
 
         $status = 0;
-        exec(
+        $this->getAdapter()->exec(
           sprintf(
             'rsync %s -e "ssh -i %s" %s %s 2>&1',
             $this->options['cli_args'],
