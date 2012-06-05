@@ -156,3 +156,33 @@ This step allows you to maka a Mysql Export/Import using two MySql Connections
         destination: "MySQL2"
         create_database: true
         drop_database: true
+
+
+Variables
+=========
+You may want to commit your .anchour file without some informations like passwords and hosts ... To do that, Anchour allows you to define some required variables in your connections like this
+
+    deploy:
+        description: Deploy using FTP
+        
+        connections:
+            MyFTP:
+                type: ftp
+                options:
+                    host: %my_host%
+                    username: %my_username%
+                    password: %my_password%
+
+        steps:
+            -
+                type: ftp
+                options:
+                    connection: MyFTP
+                    remote_dir: test
+
+        require:
+            my_host: server host
+            my_username: your username
+            my_password: your password
+
+When you run the command deploy (described above), anchour will ask you to enter the parameters in the require config section and will use them in the right places (example: %my_username% will be replaced by the value of the parameter my_username)
