@@ -89,13 +89,13 @@ class Loader
         
         // Fillign the required values in the connections array
         $connections = array();
-        foreach ($connections_config as $connection)
+        foreach ($connections_config as $name => $connection)
         {
             if (isset($connection['options'])) {
                 $connection['options'] = $this->replaceValuesInRecursiveArray($connection['options'], $this->required_values);
             }
 
-            $connections[] = $connection;
+            $connections[$name] = $connection;
         }
 
         // Building Connections
@@ -113,12 +113,12 @@ class Loader
      * @param  string          $command_name
      * @param  OutputInterface $ouput        
      */
-    public function resolveRequiredParametersForCommand($command_name, OutputInterface $ouput)
+    public function resolveRequiredParametersForCommand($command_name, OutputInterface $output)
     {
         if (!isset($this->config[$command_name])) {
             throw new \Exception(sprintf('The command %s was not found', $command_name));
         }
-
+        $command_config = $this->config[$command_name];
         $requires = isset($command_config['require']) ? $command_config['require'] : array();
         $required_values = array();
         foreach ($requires as $key => $name) {

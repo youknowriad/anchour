@@ -29,8 +29,8 @@ class Initializer
                 ->register($command_name)
                 ->setDescription($description)
                 ->setCode(function (InputInterface $input, OutputInterface $output) use($command_name, $loader) {
-                    $loader->resolveRequiredParameters($command_name, $output);
-                    $runner = new StepRunner($loader->getCommandSteps($command_name), $loader->getCommandConnections($command_name));
+                    $loader->resolveRequiredParametersForCommand($command_name, $output);
+                    $runner = new StepRunner($loader->getCommandSteps($command_name), $loader->getCommandConnections($command_name, $output));
                     $runner->run($output);
                 });
 
