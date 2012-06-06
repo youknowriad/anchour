@@ -19,7 +19,7 @@
     "autoload": {
         "psr-0": {
             "Rizeway\\Anchour": "src/",
-            "jubianchi\\Ftp": "src/"
+            "jubianchi": "src/"
         }
     },
     "require": {
@@ -27,6 +27,7 @@
         "symfony/yaml": "2.0.14",
         "symfony/console": "2.0.14",
         "symfony/options-resolver": "*",
-        "yohang/oossh": "*"
+        "yohang/oossh": "*",
+        "mageekguy/atoum": "*"
     }
 }
