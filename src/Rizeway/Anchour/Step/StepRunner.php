@@ -3,7 +3,6 @@
 namespace Rizeway\Anchour\Step;
 
 use Symfony\Component\Console\Output\OutputInterface;
-use Rizeway\Anchour\Connection\ConnectionHolder;
 
 class StepRunner
 {
@@ -15,19 +14,11 @@ class StepRunner
     protected $steps;
 
     /**
-     * The connections
-     * @var \Rizeway\Anchour\Connection\ConnectionHolder
-     */
-    protected $connections;
-
-
-    /**
      * @param Step[] $steps
      */
-    public function __construct(array $steps, ConnectionHolder $connections)
+    public function __construct(array $steps)
     {
         $this->steps = $steps;
-        $this->connections = $connections;
     }
 
     /**
@@ -36,7 +27,7 @@ class StepRunner
     public function run(OutputInterface $output)
     {
         foreach ($this->steps as $step) {
-            $step->run($output, $this->connections);
+            $step->run($output);
         }
     }
 }

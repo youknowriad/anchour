@@ -15,15 +15,16 @@ First, Add a configuration file named `.anchour` to your project.
 This Files defines scripts that are a collection of steps
 
 Example
--------
+-------    
+    connections:
+        MySSH:
+            type: "ssh"
+            options:
+                host: "localhost"
+                username: "foo"
+                password: "bar"
+
     deploy:
-        connections:
-            MySSH:
-                type: "ssh"
-                options:
-                    host: "localhost"
-                    username: "foo"
-                    password: "bar"
         steps:
             -
                 type: "echo"
@@ -36,7 +37,9 @@ Example
                     key_file: "/home/username/.ssh/id_rsa_rsync"
                     source_dir: "tmp/minitwitter"
                     destination_dir: "tmp/minitwitter2"
-                    destination_connection: "MySSH"
+                connections:
+                    connection: MySSH
+
 
 Now deploy your project by running
 
@@ -103,7 +106,8 @@ This step type allows you to synchronize a local folder in a distant server usin
         key_file: "/home/username/.ssh/id_rsa_rsync"
         source_dir: "tmp/minitwitter"
         destination_dir: "tmp/minitwitter2"
-        destination_connection: "MySSH"
+    connections:
+        destination: "MySSH"
 
 Ftp
 ---
@@ -113,9 +117,10 @@ This step type allows you to upload a local folder using a FTP connection
 
     type: "ftp"
     options:
-        connection: "MyFTP"
         local_dir: "src"
         remote_dir: "test"
+    connections:
+        connection: "MyFTP"
 
 Ssh
 ---
@@ -125,10 +130,11 @@ This step type allows you to execute commands in a remote server using SSH
 
     type: "ssh"
     options:
-        connection: "MySSH"
         commands:
             - uname -a
             - date
+    connections:
+        connection: "MySSH"
 
 Git
 ---
@@ -138,11 +144,12 @@ This allows you to clone a GIT repository in a remote server using a SSH connect
 
     type: "git"
     options:
-        connection: "MySSH"
         repository: "git://github.com/jubianchi/minitwitter.git"
         remote_dir: "tmp/minitwitter"
         clean_scm: true
         remove_existing: true
+    connections:
+        connection: "MySSH"
 
 MySql
 -----
@@ -152,10 +159,11 @@ This step allows you to maka a Mysql Export/Import using two MySql Connections
 
     type: "mysql"
     options:
-        source: "MySQL1"
-        destination: "MySQL2"
         create_database: true
         drop_database: true
+    connections:
+        source: "MySQL1"
+        destination: "MySQL2"
 
 
 Variables
@@ -177,12 +185,9 @@ You may want to commit your .anchour file without some informations like passwor
             -
                 type: ftp
                 options:
+                    remote_dir: %folder%
+                connections:
                     connection: MyFTP
-                    remote_dir: test
 
-        require:
-            my_host: server host
-            my_username: your username
-            my_password: your password
 
 When you run the command deploy (described above), anchour will ask you to enter the parameters in the require config section and will use them in the right places (example: %my_username% will be replaced by the value of the parameter my_username)

@@ -3,13 +3,13 @@
 namespace Rizeway\Anchour\Step\Steps;
 
 use Rizeway\Anchour\Step\Step;
-use Rizeway\Anchour\Connection\ConnectionHolder;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class StepRsync extends Step
 {
-    public function __construct(OptionsResolverInterface $resolver, array $options = array())
+    public function __construct(array $options = array(), $connections = array(), 
+        OptionsResolverInterface $options_resolver = null, OptionsResolverInterface $connections_resolver = null, AdapterInterface $adapter = null)
     {
         $output = $status = null;
         exec('which rsync', $output, $status);
@@ -19,7 +19,7 @@ class StepRsync extends Step
             throw new \RuntimeException('rsync command is not available');
         }
 
-        parent::__construct($resolver, $options);
+        parent::__construct($options, $connections, $options_resolver, $connections_resolver, $adapter);
     }
 
 
@@ -30,21 +30,27 @@ class StepRsync extends Step
         ));
 
         $resolver->setDefaults(array(
-            'source_connection' => null,
-            'destination_connection' => null,
             'source_dir' => null,
             'destination_dir' => null,
             'cli_args' => '-avz --progress'
         ));
     }
 
-    public function run(OutputInterface $output, ConnectionHolder $connections)
+    protected function setDefaultConnections(OptionsResolverInterface $resolver)
     {
-        if(isset($this->options['source_connection'])) {
+        $resolver->setDefaults(array(
+            'source' => null,
+            'destination' => null
+        ));
+    }
+
+    public function run(OutputInterface $output)
+    {
+        if(isset($this->connections['source'])) {
             $source = sprintf(
                 '%s@%s:%s',
-                $connections[$this->options['source_connection']]->getUsername(),
-                $connections[$this->options['source_connection']]->getHost(),
+                $this->connections['source']->getUsername(),
+                $this->connections['source']->getHost(),
                 $this->options['source_dir']
             );
 
@@ -54,8 +60,8 @@ class StepRsync extends Step
 
             $destination = sprintf(
                 '%s@%s:%s',
-                $connections[$this->options['destination_connection']]->getUsername(),
-                $connections[$this->options['destination_connection']]->getHost(),
+                $this->connections['destination']->getUsername(),
+                $this->connections['destination']->getHost(),
                 $this->options['destination_dir']
             );
         }

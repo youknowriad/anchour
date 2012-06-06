@@ -10,20 +10,25 @@ class StepRsync extends test
         $this                        
             ->object(
                 new \Rizeway\Anchour\Step\Steps\StepRsync(
-                    new \mock\Symfony\Component\OptionsResolver\OptionsResolver(), 
                     array(
-                        'key_file' => uniqid(), 
-                        'source_connection' => uniqid(), 
-                        'destination_connection' => uniqid(),
+                        'key_file' => uniqid(),
                         'source_dir' => uniqid(),
                         'destination_dir' => uniqid(),
                         'cli_args' => uniqid(),
-                    )
+                    ),
+                    array(
+                        'source' => uniqid(), 
+                        'destination' => uniqid(),
+                    ),
+                    new \mock\Symfony\Component\OptionsResolver\OptionsResolver(), 
+                    new \mock\Symfony\Component\OptionsResolver\OptionsResolver()
                 )
             )
             ->isInstanceOf('\\Rizeway\\Anchour\\Step\\Step')            
             ->exception(function() {
-                new \Rizeway\Anchour\Step\Steps\StepRsync(new \mock\Symfony\Component\OptionsResolver\OptionsResolver());
+                new \Rizeway\Anchour\Step\Steps\StepRsync(array(), array(),
+                    new \mock\Symfony\Component\OptionsResolver\OptionsResolver(),
+                    new \mock\Symfony\Component\OptionsResolver\OptionsResolver());
             })
             ->isInstanceOf('\\Symfony\\Component\\OptionsResolver\\Exception\\MissingOptionsException')
             ->hasMessage('The required option "key_file" is  missing.')
@@ -46,46 +51,53 @@ class StepRsync extends test
                     )
                 )
             )
-            ->and($connections->getMockController()->offsetGet = function() use(&$connection) { return $connection; })
             ->and($adapter->exec = function() {})
             ->and($file = uniqid())                        
             ->and($output = new \mock\Symfony\Component\Console\Output\OutputInterface())            
             ->and($message = uniqid())
             ->and($resolver = new \mock\Symfony\Component\OptionsResolver\OptionsResolver())
+            ->and($resolver_connections = new \mock\Symfony\Component\OptionsResolver\OptionsResolver())
             ->and(
                 $object = new \Rizeway\Anchour\Step\Steps\StepRsync(
-                    $resolver, 
                     array(
                         'key_file' => ($key = uniqid()), 
-                        'source_dir' => ($source = uniqid()), 
-                        'destination_connection' => uniqid(), 
+                        'source_dir' => ($source = uniqid()),
                         'destination_dir' => ($dest = uniqid())
-                    )
+                    ),
+                    array(
+                        'destination' => $connection
+                    ),
+                    $resolver, 
+                    $resolver_connections
                 )
             )
             ->and($object->setAdapter($adapter))
             ->then()
-                ->variable($object->run($output, $connections))->isNull()                
+                ->variable($object->run($output))->isNull()                
                 ->adapter($adapter)
                 ->call('exec')
                     ->withArguments(sprintf('rsync -avz --progress -e "ssh -i %s" %s %s@%s:%s 2>&1', $key, $source, $username, $host, $dest))->once()
 
 
             ->if($resolver = new \mock\Symfony\Component\OptionsResolver\OptionsResolver())
+            ->and($resolver_connections = new \mock\Symfony\Component\OptionsResolver\OptionsResolver())
             ->and(
                 $object = new \Rizeway\Anchour\Step\Steps\StepRsync(
-                    $resolver, 
                     array(
                         'key_file' => ($key = uniqid()), 
-                        'source_dir' => ($source = uniqid()), 
-                        'source_connection' => uniqid(), 
+                        'source_dir' => ($source = uniqid()),
                         'destination_dir' => ($dest = uniqid())
-                    )
+                    ), 
+                    array(
+                        'source' => $connection
+                    ),
+                    $resolver, 
+                    $resolver_connections
                 )
             )
             ->and($object->setAdapter($adapter))
             ->then()
-                ->variable($object->run($output, $connections))->isNull()                
+                ->variable($object->run($output))->isNull()                
                 ->adapter($adapter)
                 ->call('exec')
                     ->withArguments(sprintf('rsync -avz --progress -e "ssh -i %s" %s@%s:%s %s 2>&1', $key, $username, $host, $source, $dest))->once()                    

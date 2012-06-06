@@ -10,9 +10,10 @@ class StepFactory extends Adaptable
      * Build a step from a conf array
      * 
      * @param  mixed[] $config The Conf array
+     * @param Rizeway\Anchour\Connection\ConnectionInterface[]
      * @return Rizeway\Anchour\Step\Step
      */
-    public function build($config)
+    public function build($config, $connections)
     {
         if (!isset($config['type']))
         {
@@ -26,12 +27,17 @@ class StepFactory extends Adaptable
         }
 
         $options = isset($config['options']) ? $config['options'] : array();
+        $connection_names = isset($config['connections']) ? $config['connections'] : array();
+        $connection_objects = array();
+        foreach ($connection_names as $key => $connection_name) {
+            $connection_objects[$key] = $connections[$connection_name];
+        }
 
-        return $this->getInstance($class, $options);
+        return $this->getInstance($class, $options, $connection_objects);
     }
 
-    public function getInstance($class, $options) 
+    public function getInstance($class, $options, $connections) 
     {
-        return new $class(new \Symfony\Component\OptionsResolver\OptionsResolver(), $options);
+        return new $class($options, $connections);
     }
 }

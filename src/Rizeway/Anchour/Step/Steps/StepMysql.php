@@ -3,14 +3,14 @@
 namespace Rizeway\Anchour\Step\Steps;
 
 use Rizeway\Anchour\Step\Step;
-use Rizeway\Anchour\Connection\ConnectionHolder;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class StepMysql extends Step
 {
-    public function __construct(OptionsResolverInterface $resolver, array $options = array())
+    public function __construct(array $options = array(), $connections = array(), 
+        OptionsResolverInterface $options_resolver = null, OptionsResolverInterface $connections_resolver = null, AdapterInterface $adapter = null)
     {
         $output = $status = null;
         exec('which mysql && which mysqldump', $output, $status);
@@ -20,28 +20,31 @@ class StepMysql extends Step
             throw new \RuntimeException('mysql and/or mysqldump command are not available');
         }
 
-        parent::__construct($resolver, $options);
+        parent::__construct($options, $connections, $options_resolver, $connections_resolver, $adapter);
     }
 
     protected function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setRequired(array(
-            'source',
-            'destination'
-        ));
-
         $resolver->setDefaults(array(
             'create_database' => true,
             'drop_database' => true,
         ));
     }
 
-    public function run(OutputInterface $output, ConnectionHolder $connections)
+    protected function setDefaultConnections(OptionsResolverInterface $resolver)
+    {
+        $resolver->setRequired(array(
+            'source',
+            'destination'
+        ));
+    }
+
+    public function run(OutputInterface $output)
     {
         $file = $this->getAdapter()->tempnam(sys_get_temp_dir(), uniqid());
 
-        $source = $connections[$this->options['source']];
-        $destination = $connections[$this->options['destination']];
+        $source = $this->connections['source'];
+        $destination = $this->connections['destination'];
 
         if(true === $this->options['drop_database'])
         {

@@ -10,19 +10,24 @@ class StepSsh extends test
         $this                        
             ->object(
                 new \Rizeway\Anchour\Step\Steps\StepSsh(
-                    new \mock\Symfony\Component\OptionsResolver\OptionsResolver(), 
                     array(
-                        'connection' => uniqid(), 
                         'commands' => array()                        
-                    )
+                    ),
+                    array(
+                        'connection' => uniqid()                     
+                    ),
+                    new \mock\Symfony\Component\OptionsResolver\OptionsResolver(), 
+                    new \mock\Symfony\Component\OptionsResolver\OptionsResolver()
                 )
             )
             ->isInstanceOf('\\Rizeway\\Anchour\\Step\\Step')            
             ->exception(function() {
-                new \Rizeway\Anchour\Step\Steps\StepSsh(new \mock\Symfony\Component\OptionsResolver\OptionsResolver());
+                new \Rizeway\Anchour\Step\Steps\StepSsh(array(), array(),
+                    new \mock\Symfony\Component\OptionsResolver\OptionsResolver(),
+                    new \mock\Symfony\Component\OptionsResolver\OptionsResolver());
             })
             ->isInstanceOf('\\Symfony\\Component\\OptionsResolver\\Exception\\MissingOptionsException')
-            ->hasMessage('The required options "commands", "connection" are missing.')
+            ->hasMessage('The required option "commands" is  missing.')
         ;
     }
 }

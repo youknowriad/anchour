@@ -3,13 +3,13 @@
 namespace Rizeway\Anchour\Step\Steps;
 
 use Rizeway\Anchour\Step\Step;
-use Rizeway\Anchour\Connection\ConnectionHolder;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class StepGit extends StepSsh
 {
-    public function __construct(OptionsResolverInterface $resolver, array $options = array())
+    public function __construct(array $options = array(), $connections = array(), 
+        OptionsResolverInterface $options_resolver = null, OptionsResolverInterface $connections_resolver = null, AdapterInterface $adapter = null)
     {
         $output = $status = null;
         exec('which git', $output, $status);
@@ -19,7 +19,7 @@ class StepGit extends StepSsh
             throw new \RuntimeException('git command is not available');
         }
 
-        parent::__construct($resolver, $options);
+        parent::__construct($options, $connections, $options_resolver, $connections_resolver, $adapter);
     }
 
     protected function setDefaultOptions(OptionsResolverInterface $resolver)
@@ -38,7 +38,7 @@ class StepGit extends StepSsh
         ));
     }
 
-    public function run(OutputInterface $output, ConnectionHolder $connections)
+    public function run(OutputInterface $output)
     {
         if (true === $this->options['remove_existing'])
         {
@@ -52,6 +52,6 @@ class StepGit extends StepSsh
             $this->options['commands'][] = sprintf('rm -rf %s/.git', $this->options['remote_dir']);
         }
 
-        parent::run($output, $connections);
+        parent::run($output);
     }
 }

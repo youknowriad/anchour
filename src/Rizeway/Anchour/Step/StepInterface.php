@@ -3,7 +3,6 @@
 namespace Rizeway\Anchour\Step;
 
 use Symfony\Component\Console\Output\OutputInterface;
-use Rizeway\Anchour\Connection\ConnectionHolder;
 
 interface StepInterface
 {
@@ -11,5 +10,5 @@ interface StepInterface
     /**
      * Run the step
      */
-    public function run(OutputInterface $output, ConnectionHolder $connections);
+    public function run(OutputInterface $output);
 }

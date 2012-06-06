@@ -3,7 +3,6 @@
 namespace Rizeway\Anchour\Step\Steps;
 
 use Rizeway\Anchour\Step\Step;
-use Rizeway\Anchour\Connection\ConnectionHolder;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -25,7 +24,7 @@ class StepPhar extends Step
         ));
     }
 
-    public function run(OutputInterface $output, ConnectionHolder $connections)
+    public function run(OutputInterface $output)
     {
         $path = realpath($this->options['output']) . DIRECTORY_SEPARATOR . $this->options['name'];
         $output->writeln(sprintf('Creating Phar archive <info>%s</info>', $path));

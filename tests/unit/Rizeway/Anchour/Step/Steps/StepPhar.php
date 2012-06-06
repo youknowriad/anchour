@@ -10,7 +10,6 @@ class StepPhar extends test
         $this                        
             ->object(
                 new \Rizeway\Anchour\Step\Steps\StepPhar(
-                    new \mock\Symfony\Component\OptionsResolver\OptionsResolver(), 
                     array(
                         'directory' => uniqid(),
                         'name'  => uniqid(),
@@ -18,12 +17,17 @@ class StepPhar extends test
                         'index' => null,
                         'output' => '.',
                         'regexp' => null
-                    )
+                    ),
+                    array(),
+                    new \mock\Symfony\Component\OptionsResolver\OptionsResolver(),
+                    new \mock\Symfony\Component\OptionsResolver\OptionsResolver()
                 )
             )
             ->isInstanceOf('\\Rizeway\\Anchour\\Step\\Step')            
             ->exception(function() {
-                new \Rizeway\Anchour\Step\Steps\StepPhar(new \mock\Symfony\Component\OptionsResolver\OptionsResolver());
+                new \Rizeway\Anchour\Step\Steps\StepPhar(array(),array(),
+                    new \mock\Symfony\Component\OptionsResolver\OptionsResolver(),
+                    new \mock\Symfony\Component\OptionsResolver\OptionsResolver());
             })
             ->isInstanceOf('\\Symfony\\Component\\OptionsResolver\\Exception\\MissingOptionsException')
             ->hasMessage('The required options "directory", "name", "stub" are missing.')

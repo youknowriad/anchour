@@ -23,8 +23,8 @@ class TargetCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->loader->resolveRequiredParametersForCommand($this->getName(), $output);
-        $runner = new StepRunner($this->loader->getCommandSteps($this->getName()), $this->loader->getCommandConnections($this->getName(), $output));
+        $this->loader->resolveRequiredVariablesForCommand($this->getName(), $output);
+        $runner = new StepRunner($this->loader->getCommandSteps($this->getName()));
         $runner->run($output);
     }
 }

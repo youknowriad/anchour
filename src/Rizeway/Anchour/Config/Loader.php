@@ -8,7 +8,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Rizeway\Anchour\Console\Application;
 use Rizeway\Anchour\Step\StepFactory;
 use Rizeway\Anchour\Connection\ConnectionFactory;
-use Rizeway\Anchour\Connection\ConnectionHolder;
 
 class Loader
 {
@@ -30,6 +29,11 @@ class Loader
      */
     protected $required_values = array();
 
+    /**
+     * config Loader Constructor
+     * @param Application $console
+     * @param string      $filename
+     */
     public function __construct(Application $console, $filename)
     {
         $this->config = Yaml::parse($filename);
@@ -52,15 +56,6 @@ class Loader
         return $commands;
     }
 
-    public function getCommand($name)
-    {
-        if (!isset($this->config[$name])) {
-            throw new \Exception(sprintf('The command %s was not found', $name));
-        }
-
-        return $this->config[$name];
-    }
-
     /**
      * Get Steps
      * @param  string $command_name
@@ -70,12 +65,13 @@ class Loader
     {
         $command_config = $this->config[$command_name];
         $command_config = $this->getCommand($command_name);
-        $steps_config = isset($command_config['steps']) ? $command_config['steps'] : $command_name;
+        $steps_config = isset($command_config['steps']) ? $command_config['steps'] : array();
+        $connections = $this->getCommandConnections($command_name);
         $factory = new StepFactory();
         $steps = array();
         foreach ($steps_config as $step_config)
         {
-            $steps[] = $factory->build($step_config);
+            $steps[] = $factory->build($step_config, $connections);
         }
 
         return $steps;
@@ -84,42 +80,25 @@ class Loader
     /**
      * Get Connections
      * @param  string $command_name
-     * @return string[]
+     * @return Rizeway\Anchour\Connection\ConnectionInterface[]
      */
-    public function getCommandConnections($command_name, $output) 
+    protected function getCommandConnections($command_name) 
     {
-        $command_config = $this->getCommand($command_name);
-
-        $connections_config = $this->getGlobalConnections();
-        $connections_config = array_merge($connections_config, isset($command_config['connections']) ? $command_config['connections'] : array());
-
-        // Fillign the required values in the connections array
-        $connections = array();
-        foreach ($connections_config as $name => $connection)
-        {
-            if (isset($connection['options'])) {
-                $connection['options'] = $this->replaceValuesInRecursiveArray($connection['options'], $this->required_values);
-            }
-
-            $connections[$name] = $connection;
-        }
-
+        $command_config = $this->getCommand($command_name); 
+        $steps_config = isset($command_config['steps']) ? $command_config['steps'] : array();   
         // Building Connections
         $factory = new ConnectionFactory();
-        $connection_objects = new ConnectionHolder();
-        foreach ($connections as $name => $connection) {
-            $connection_objects[$name] = $factory->build($connection);
+        $connection_objects = array();
+        foreach ($steps_config as $step) {
+            $connections_config =  isset($step['connections']) ? $step['connections'] : array();
+            foreach ($connections_config as $name => $connection) {
+                if (!isset($connection_objects[$connection])) {
+                    $connection_objects[$connection] = $factory->build($this->getConnection($connection));
+                }
+            }
         }
 
         return $connection_objects;
-    }
-
-    /**
-     * @return array
-     */
-    public function getGlobalConnections()
-    {
-        return isset($this->config['connections']) ? $this->config['connections'] : array();
     }
 
     /**
@@ -127,16 +106,66 @@ class Loader
      * @param  string          $command_name
      * @param  OutputInterface $ouput        
      */
-    public function resolveRequiredParametersForCommand($command_name, OutputInterface $output)
+    public function resolveRequiredVariablesForCommand($command_name, OutputInterface $output)
     {
         $command_config = $this->getCommand($command_name);
-        $requires = isset($command_config['require']) ? $command_config['require'] : array();
-        $required_values = array();
-        foreach ($requires as $key => $name) {
-            $required_values[$key] = $this->console->getHelperSet()->get('dialog')->ask($output, sprintf('Entrer the <info>%s</info> : ', $name));
+        $variables_to_ask = array();
+
+        // Get The Steps Required Variables
+        $steps = isset($command_config['steps']) ? $command_config['steps']: array();
+        foreach ($steps as $step) {
+            $connections = isset($step['connections']) ?$step['connections'] : array();
+            foreach ($connections as $connection) {
+                $connection_config = $this->getConnection($connection);
+                $variables_to_ask += $this->getVariablesToAskInArray($connection_config['options'] ? $connection_config['options'] : array());
+            }
+            $variables_to_ask += $this->getVariablesToAskInArray($step['options'] ? $step['options'] : array());
         }
 
-        $this->required_values = $required_values;
+        // Ask For The Required Variables
+        $required_variables_values = array();
+        foreach ($variables_to_ask as $var) {
+            $required_variables_values[$var] = $this->console->getHelperSet()->get('dialog')->ask($output, sprintf('Entrer the <info>%s</info> : ', $var));
+        }
+
+        // Replace variables with values
+        foreach ($steps as $key => $step) {
+            $connections = isset($step['connections']) ? $step['connections'] : array();
+            foreach ($connections as $connection) {
+                if (isset($this->config['connections'][$connection]['options'])) {
+                    $this->config['connections'][$connection]['options'] = 
+                        $this->replaceValuesInRecursiveArray($this->config['connections'][$connection]['options'], $required_variables_values);
+                }
+            }
+            if (isset($this->config[$command_name]['steps'][$key]['options'])) {
+                $this->config[$command_name]['steps'][$key]['options'] = 
+                    $this->replaceValuesInRecursiveArray($this->config[$command_name]['steps'][$key]['options'], $required_variables_values);
+            }
+        }
+    }
+
+    /**
+     * @return mixed[]
+     */
+    protected function getCommand($name)
+    {
+        if (!isset($this->config[$name])) {
+            throw new \Exception(sprintf('The command %s was not found', $name));
+        }
+
+        return $this->config[$name];
+    }
+
+    /**
+     * @return mixed[]
+     */
+    protected function getConnection($name)
+    {
+        if (!isset($this->config['connections']) || !isset($this->config['connections'][$name])) {
+            throw new \Exception(sprintf('The connection %s was not defined', $name));
+        }
+
+        return $this->config['connections'][$name];
     }
 
     /**
@@ -153,7 +182,7 @@ class Loader
                 $result[$key] = $this->replaceValuesInRecursiveArray($value, $values);
             } else {
                 $result[$key] = $value;
-                if (substr($value, 0, 1) == '%' && substr($value, -1, 1) == '%') {
+                if (preg_match('/^%([^0-9\-]+[a-zA-Z0-9_]*)%$/', $value)) {
                     $key_value = substr($value, 1, strlen($value) - 2);
                     if (isset($values[$key_value])) {
                         $result[$key] = $values[$key_value];
@@ -163,5 +192,25 @@ class Loader
         }
 
         return $result;
+    }
+
+    /**
+     * Get The variables to ask %var% from a recursive array
+     * @param  mixed[] $array 
+     * @return string[]
+     */
+    protected function getVariablesToAskInArray($array)
+    {
+        $variables = array();
+        foreach ($array as $value) {
+            if (is_array($value)) {
+                $variables += $this->getVariablesToAskInArray($value);
+            } elseif (preg_match('/^%([^0-9\-]+[a-zA-Z0-9_]*)%$/', $value)) {
+                $key = substr($value, 1, strlen($value) - 2);
+                $variables[$key] = $key;
+            }
+        }
+
+        return $variables;
     }
 }

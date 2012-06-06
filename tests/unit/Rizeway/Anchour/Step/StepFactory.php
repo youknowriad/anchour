@@ -15,11 +15,11 @@ class StepFactory extends test
             ->and($adapter->class_exists = true)
             ->and($object->setAdapter($adapter))
             ->then()
-                ->object($object->build(array('type' => uniqid())))->isIdenticalTo($step)
+                ->object($object->build(array('type' => uniqid()), array()))->isIdenticalTo($step)
 
             ->exception(function() {
                 $object = new \Rizeway\Anchour\Step\StepFactory();
-                $object->build(array());
+                $object->build(array(), array());
             })                         
             ->isInstanceOf('\\RuntimeException')
             ->hasMessage('The step type is required')

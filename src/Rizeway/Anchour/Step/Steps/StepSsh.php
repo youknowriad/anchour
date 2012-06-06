@@ -3,7 +3,6 @@
 namespace Rizeway\Anchour\Step\Steps;
 
 use Rizeway\Anchour\Step\Step;
-use Rizeway\Anchour\Connection\ConnectionHolder;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use OOSSH\SSH2\Connection;
@@ -11,7 +10,8 @@ use OOSSH\SSH2\Authentication\Password;
 
 class StepSsh extends Step
 {
-    public function __construct(OptionsResolverInterface $resolver, array $options = array())
+    public function __construct(array $options = array(), $connections = array(), 
+        OptionsResolverInterface $options_resolver = null, OptionsResolverInterface $connections_resolver = null, AdapterInterface $adapter = null)
     {
         $output = $status = null;
         exec('which ssh', $output, $status);
@@ -21,20 +21,26 @@ class StepSsh extends Step
             throw new \RuntimeException('ssh command is not available');
         }
 
-        parent::__construct($resolver, $options);
+        parent::__construct($options, $connections, $options_resolver, $connections_resolver, $adapter);
     }
 
     protected function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setRequired(array(
-            'connection',
             'commands'
         ));
     }
-
-    public function run(OutputInterface $output, ConnectionHolder $connections)
+    
+    protected function setDefaultConnections(OptionsResolverInterface $resolver)
     {
-        $connection = $connections[$this->options['connection']];
+        $resolver->setRequired(array(
+            'connection'
+        ));
+    }
+
+    public function run(OutputInterface $output)
+    {
+        $connection = $this->connections['connection'];
         $connection->connect($output);
 
         foreach ($this->options['commands'] as $command)
