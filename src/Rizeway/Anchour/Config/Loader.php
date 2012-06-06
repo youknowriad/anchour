@@ -89,8 +89,10 @@ class Loader
     public function getCommandConnections($command_name, $output) 
     {
         $command_config = $this->getCommand($command_name);
-        $connections_config = isset($command_config['connections']) ? $command_config['connections'] : array();
-        
+
+        $connections_config = $this->getGlobalConnections();
+        $connections_config = array_merge($connections_config, isset($command_config['connections']) ? $command_config['connections'] : array());
+
         // Fillign the required values in the connections array
         $connections = array();
         foreach ($connections_config as $name => $connection)
@@ -110,6 +112,14 @@ class Loader
         }
 
         return $connection_objects;
+    }
+
+    /**
+     * @return array
+     */
+    public function getGlobalConnections()
+    {
+        return isset($this->config['connections']) ? $this->config['connections'] : array();
     }
 
     /**
