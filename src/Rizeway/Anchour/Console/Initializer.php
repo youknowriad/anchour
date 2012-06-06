@@ -16,19 +16,14 @@ class Initializer
     {
         foreach ($loader->getCommands() as $command_name => $description)
         {
-            $console->add($this->getInstance($command_name, $description, $loader));
+            $console->add($this->getInstance($command_name, $description));
         }
     }
 
-    public function getInstance($name, $description, Loader $loader = null)
+    public function getInstance($name, $description)
     {
         $command = new \Rizeway\Anchour\Console\Command\TargetCommand($name);
         $command->setDescription($description);
-
-        if (false === is_null($loader))
-        {
-            $command->setLoader($loader);
-        }
 
         return $command;
     }
