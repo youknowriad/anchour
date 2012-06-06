@@ -1,0 +1,49 @@
+commands:
+    echo:
+        description: "Echo step sample"
+
+        steps:
+            -
+                type: "echo"
+                options:
+                    message: "A single line string"
+
+            -
+                type: "echo"
+                options:
+                    message: "A single line string <comment>with</comment> <info>text</info> <error>formatting</error>"
+
+            -
+                type: "echo"
+                options:
+                    message: |
+                        A multiline string.
+                        Here is the second line and a CR.
+
+            -
+                type: "echo"
+                options:
+                    message: >
+                        A folded multiline string.
+                        Here is the second part with a CR at the end.
+
+            -
+                type: "echo"
+                options:
+                    message:
+                        - "This is a list of messages"
+                        - "Here is the second entry"
+                        - "And this is a third and last entry"
+
+            -
+                type: "echo"
+                options:
+                    message:
+                        - "<info>Of course, you can mix strings in a single step</info>"
+                        - |
+                            Add <comment>formatting</comment>...
+                            ...<comment>to multiline strings</comment>
+                        - >
+                            Or try to use folded strings
+                            <error>with some formatting</error>
+                        - "The <info>echo</info> step is a really cool thing to <info>add log</info> to your deploy script"
