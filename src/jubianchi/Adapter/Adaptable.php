@@ -4,7 +4,7 @@ namespace jubianchi\Adapter;
 use jubianchi\Adapter\AdaptableInterface;
 
 class Adaptable implements AdaptableInterface {
-	/**
+    /**
      * @var \jubianchi\Adapter\AdapterInterface
      */
     private $adapter;

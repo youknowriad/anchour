@@ -12,12 +12,23 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 use Rizeway\Anchour\Config\Loader;
 use Rizeway\Anchour\Console\Command\InitCommand;
 
-class Application extends BaseApplication
+use jubianchi\Adapter\AdaptableInterface;
+use jubianchi\Adapter\AdapterInterface;
+use jubianchi\Adapter\Adapter;
+
+class Application extends BaseApplication implements AdaptableInterface
 {
     protected $initializer;
 
-    public function __construct(Initializer $initializer)
+    /**
+     * @var \jubianchi\Adapter\AdapterInterface
+     */
+    private $adapter;
+
+    public function __construct(Initializer $initializer, AdapterInterface $adapter = null)
     {
+        $this->setAdapter($adapter);
+
         parent::__construct('Anchour');
 
         $this->setCatchExceptions(true);
@@ -44,13 +55,33 @@ class Application extends BaseApplication
         return parent::doRun($input, $output);
     }
 
+    /**
+     * @param \jubianchi\Adapter\AdapterInterface $adapter
+     */
+    public function setAdapter(AdapterInterface $adapter = null)
+    {
+      $this->adapter = $adapter;
 
+      return $this;
+    }
+
+    /**
+     * @return \jubianchi\Adapter\AdapterInterface
+     */
+    public function getAdapter()
+    {
+      if(true === is_null($this->adapter)) {
+        $this->adapter = new Adapter();
+      }
+
+      return $this->adapter;
+    }
 
     protected function initialize()
     {
         // Checking the anchour config file
         $anchour_config_file = getcwd().'/.anchour';
-        if (!file_exists($anchour_config_file))
+        if (false === $this->getAdapter()->file_exists($anchour_config_file))
         {
             throw new \Exception('The .anchour config files was not found in the current directory');
         }
