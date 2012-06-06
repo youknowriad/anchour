@@ -10,5 +10,5 @@ use
 ;
 
 class Adapter extends AtoumAdapter implements BaseAdapter 
-{   
+{
 }

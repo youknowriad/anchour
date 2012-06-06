@@ -8,17 +8,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 use OOSSH\SSH2\Connection;
 use OOSSH\SSH2\Authentication\Password;
 
+use jubianchi\Adapter\AdapterInterface;
+
 class StepSsh extends Step
 {
     public function __construct(array $options = array(), $connections = array(), 
         OptionsResolverInterface $options_resolver = null, OptionsResolverInterface $connections_resolver = null, AdapterInterface $adapter = null)
     {
-        $output = $status = null;
-        exec('which ssh', $output, $status);
+        $this->setAdapter($adapter);
 
-        if(0 !== $status)
+        if(false === $this->getAdapter()->extension_loaded('ssh2'))
         {
-            throw new \RuntimeException('ssh command is not available');
+            throw new \RuntimeException('SSH2 extension is not loaded');
         }
 
         parent::__construct($options, $connections, $options_resolver, $connections_resolver, $adapter);
@@ -40,12 +41,11 @@ class StepSsh extends Step
 
     public function run(OutputInterface $output)
     {
-        $connection = $this->connections['connection'];
-        $connection->connect($output);
+        $this->getConnection()->connect($output);
 
         foreach ($this->options['commands'] as $command)
         {
-            $connection->exec($command, function($stdio, $stderr) use($output) {
+            $this->getConnection()->exec($command, function($stdio, $stderr) use($output) {
               $output->write($stdio);
 
               if('' !== $stderr)
@@ -54,5 +54,12 @@ class StepSsh extends Step
               }
             });
         }
+    }
+
+    /**
+     * @return string
+     */
+    protected function getConnection() {
+        return  $this->connections['connection'];
     }
 }
