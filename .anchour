@@ -6,6 +6,6 @@ phar:
             type: "phar"
             options:
                 directory: "."
-                regexp: "`^bin/.*|src/.*|vendor/.*|anchour\.php`"
+                regexp: "`^bin/.*|src/.*|vendor/(?!mageekguy).*|anchour\.php`"
                 stub: "anchour.php"
                 name: "anchour.phar"
