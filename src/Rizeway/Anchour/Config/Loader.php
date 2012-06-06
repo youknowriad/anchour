@@ -46,8 +46,12 @@ class Loader
      */
     public function getCommands() 
     {
+        if (!isset($this->config['commands'])) {
+            throw new \Exception('No commands defined');
+        }
+
         $commands = array();
-        foreach ($this->config as $name => $command_config)
+        foreach ($this->config['commands'] as $name => $command_config)
         {
             $description = isset($command_config['description']) ? $command_config['description'] : $name;
             $commands[$name] = $description;
@@ -63,7 +67,6 @@ class Loader
      */
     public function getCommandSteps($command_name) 
     {
-        $command_config = $this->config[$command_name];
         $command_config = $this->getCommand($command_name);
         $steps_config = isset($command_config['steps']) ? $command_config['steps'] : array();
         $connections = $this->getCommandConnections($command_name);
@@ -137,9 +140,9 @@ class Loader
                         $this->replaceValuesInRecursiveArray($this->config['connections'][$connection]['options'], $required_variables_values);
                 }
             }
-            if (isset($this->config[$command_name]['steps'][$key]['options'])) {
-                $this->config[$command_name]['steps'][$key]['options'] = 
-                    $this->replaceValuesInRecursiveArray($this->config[$command_name]['steps'][$key]['options'], $required_variables_values);
+            if (isset($this->config['commands'][$command_name]['steps'][$key]['options'])) {
+                $this->config['commands'][$command_name]['steps'][$key]['options'] = 
+                    $this->replaceValuesInRecursiveArray($this->config['commands'][$command_name]['steps'][$key]['options'], $required_variables_values);
             }
         }
     }
@@ -149,11 +152,11 @@ class Loader
      */
     protected function getCommand($name)
     {
-        if (!isset($this->config[$name])) {
+        if (!isset($this->config['commands']) || !isset($this->config['commands'][$name])) {
             throw new \Exception(sprintf('The command %s was not found', $name));
         }
 
-        return $this->config[$name];
+        return $this->config['commands'][$name];
     }
 
     /**

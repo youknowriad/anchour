@@ -24,21 +24,22 @@ Example
                 username: "foo"
                 password: "bar"
 
-    deploy:
-        steps:
-            -
-                type: "echo"
-                options:
-                    message: "A test message <comment>with</comment> <info>formatted</info> <error>output</error>"
+    commands:
+        deploy:
+            steps:
+                -
+                    type: "echo"
+                    options:
+                        message: "A test message <comment>with</comment> <info>formatted</info> <error>output</error>"
 
-            -
-                type: "rsync"
-                options:
-                    key_file: "/home/username/.ssh/id_rsa_rsync"
-                    source_dir: "tmp/minitwitter"
-                    destination_dir: "tmp/minitwitter2"
-                connections:
-                    connection: MySSH
+                -
+                    type: "rsync"
+                    options:
+                        key_file: "/home/username/.ssh/id_rsa_rsync"
+                        source_dir: "tmp/minitwitter"
+                        destination_dir: "tmp/minitwitter2"
+                    connections:
+                        connection: MySSH
 
 
 Now deploy your project by running
@@ -170,24 +171,27 @@ Variables
 =========
 You may want to commit your .anchour file without some informations like passwords and hosts ... To do that, Anchour allows you to define some required variables in your connections like this
 
-    deploy:
-        description: Deploy using FTP
-        
-        connections:
-            MyFTP:
-                type: ftp
-                options:
-                    host: %my_host%
-                    username: %my_username%
-                    password: %my_password%
 
-        steps:
-            -
-                type: ftp
-                options:
-                    remote_dir: %folder%
-                connections:
-                    connection: MyFTP
+    connections:
+        MyFTP:
+            type: ftp
+            options:
+                host: %my_host%
+                username: %my_username%
+                password: %my_password%
+
+    commands:
+        deploy:
+            description: Deploy using FTP
+            
+
+            steps:
+                -
+                    type: ftp
+                    options:
+                        remote_dir: %folder%
+                    connections:
+                        connection: MyFTP
 
 
-When you run the command deploy (described above), anchour will ask you to enter the parameters in the require config section and will use them in the right places (example: %my_username% will be replaced by the value of the parameter my_username)
+When you run the command deploy (described above), anchour will detect all the required variables for your command, asks you their values, and use them in the right places (example: %my_username% will be replaced by the value of the variable my_username)

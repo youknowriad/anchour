@@ -1,11 +1,13 @@
-phar:
-    description: "Build anchour phar"
+commands:
 
-    steps:
-        -
-            type: "phar"
-            options:
-                directory: "."
-                regexp: "`^bin/.*|src/.*|vendor/(?!mageekguy).*|anchour\.php`"
-                stub: "anchour.php"
-                name: "anchour.phar"
+    phar:
+        description: "Build anchour phar"
+
+        steps:
+            -
+                type: "phar"
+                options:
+                    directory: "."
+                    regexp: "`^bin/.*|src/.*|vendor/(?!mageekguy).*|anchour\.php`"
+                    stub: "anchour.php"
+                    name: "anchour.phar"
