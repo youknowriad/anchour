@@ -2,16 +2,14 @@
 
 namespace Rizeway\Anchour\Connection;
 
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 abstract class Connection implements ConnectionInterface
 {
     protected $options;
 
-    public function __construct(array $options = array())
-    {
-        $resolver = new OptionsResolver();
+    public function __construct(OptionsResolverInterface $resolver, array $options = array())
+    {        
         $this->setDefaultOptions($resolver);
         $this->options = $resolver->resolve($options);
     }

@@ -52,6 +52,15 @@ class Loader
         return $commands;
     }
 
+    public function getCommand($name)
+    {
+        if (!isset($this->config[$name])) {
+            throw new \Exception(sprintf('The command %s was not found', $name));
+        }
+
+        return $this->config[$name];
+    }
+
     /**
      * Get Steps
      * @param  string $command_name
@@ -59,10 +68,8 @@ class Loader
      */
     public function getCommandSteps($command_name) 
     {
-        if (!isset($this->config[$command_name])) {
-            throw new \Exception(sprintf('The command %s was not found', $command_name));
-        }
         $command_config = $this->config[$command_name];
+        $command_config = $this->getCommand($command_name);
         $steps_config = isset($command_config['steps']) ? $command_config['steps'] : $command_name;
         $factory = new StepFactory();
         $steps = array();
@@ -81,10 +88,7 @@ class Loader
      */
     public function getCommandConnections($command_name, $output) 
     {
-        if (!isset($this->config[$command_name])) {
-            throw new \Exception(sprintf('The command %s was not found', $command_name));
-        }
-        $command_config = $this->config[$command_name];
+        $command_config = $this->getCommand($command_name);
         $connections_config = isset($command_config['connections']) ? $command_config['connections'] : array();
         
         // Fillign the required values in the connections array
@@ -115,14 +119,11 @@ class Loader
      */
     public function resolveRequiredParametersForCommand($command_name, OutputInterface $output)
     {
-        if (!isset($this->config[$command_name])) {
-            throw new \Exception(sprintf('The command %s was not found', $command_name));
-        }
-        $command_config = $this->config[$command_name];
+        $command_config = $this->getCommand($command_name);
         $requires = isset($command_config['require']) ? $command_config['require'] : array();
         $required_values = array();
         foreach ($requires as $key => $name) {
-            $required_values[$key] = $this->console->getHelperSet()->get('dialog')->ask($output, sprintf('Entrer the "%s" : ', $name));
+            $required_values[$key] = $this->console->getHelperSet()->get('dialog')->ask($output, sprintf('Entrer the <info>%s</info> : ', $name));
         }
 
         $this->required_values = $required_values;

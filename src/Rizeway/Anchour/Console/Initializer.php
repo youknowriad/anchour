@@ -10,57 +10,26 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Rizeway\Anchour\Step\StepRunner; 
 use Rizeway\Anchour\Config\Loader;
 
-class Initializer 
+class Initializer
 {
-    public function initialize(Application $console)
+    public function initialize(Application $console, Loader $loader)
     {
-        // Checking the anchour config file
-        $anchour_config_file = getcwd().'/.anchour';
-        if (!file_exists($anchour_config_file))
-        {
-            throw new \Exception('The .anchour config files was not found in the current directory');
-        }
-        
-        $loader = new Loader($console, $anchour_config_file);
-
         foreach ($loader->getCommands() as $command_name => $description)
         {
-            $console
-                ->register($command_name)
-                ->setDescription($description)
-                ->setCode(function (InputInterface $input, OutputInterface $output) use($command_name, $loader) {
-                    $loader->resolveRequiredParametersForCommand($command_name, $output);
-                    $runner = new StepRunner($loader->getCommandSteps($command_name), $loader->getCommandConnections($command_name, $output));
-                    $runner->run($output);
-                });
-
-            $console
-                ->register('init')
-                ->setDescription('Create a default .anchour file')
-                ->addOption('force', 'f', InputOption::VALUE_NONE)
-                ->setCode(function(InputInterface $input, OutputInterface $output) {
-                    $template = <<<YAML
-#Here you can define your targets
-target:
-    connections:
-        #Here you can define your connections
-
-    steps:
-        #Here you can define your steps
-        -
-            type: "echo"
-            options:
-                message: "This is a default <info>echo</info> step"
-YAML;
-
-                    if (file_exists('.anchour') && !$input->getOption('force'))
-                    {
-                      throw new \RuntimeException('File .anchour already exists. To replace it, use the --force/-f option');
-                    }
-
-                    $file = new \SplFileObject('.anchour', 'w+');
-                    $file->fwrite($template);
-                });
+            $console->add($this->getInstance($command_name, $description, $loader));
         }
+    }
+
+    public function getInstance($name, $description, Loader $loader = null)
+    {
+        $command = new \Rizeway\Anchour\Console\Command\TargetCommand($name);
+        $command->setDescription($description);
+
+        if (false === is_null($loader))
+        {
+            $command->setLoader($loader);
+        }
+
+        return $command;
     }
 }

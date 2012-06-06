@@ -12,7 +12,7 @@ use jubianchi\Ftp\Ftp;
 class ConnectionFtp extends Connection
 {
     /**
-     * @var \OOSSH\SSH2\Connection
+     * @var \jubianchi\Ftp\Ftp
      */
     private $connection;
 
@@ -35,7 +35,8 @@ class ConnectionFtp extends Connection
         if(false === $this->isConnected()) {
             $output->writeln(sprintf('Opening <info>FTP</info> connection to <info>%s</info>', $this->options['host']));
 
-            $this->connection = new Ftp($this->options['host'], $this->options['username'], $this->options['password'], $this->options['port'], $this->options['timeout']);
+            $this->connection = new Ftp();
+            $this->connection->connect($this->options['host'], $this->options['username'], $this->options['password'], $this->options['port'], $this->options['timeout']);
         }
     }
 

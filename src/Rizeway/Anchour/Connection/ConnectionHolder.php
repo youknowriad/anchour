@@ -6,7 +6,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ConnectionHolder implements \ArrayAccess
 {
-
     /**
      * The connections
      * @var Connection[]
