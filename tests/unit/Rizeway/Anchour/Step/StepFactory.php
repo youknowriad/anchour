@@ -17,12 +17,24 @@ class StepFactory extends test
             ->then()
                 ->object($object->build(array('type' => uniqid()), array()))->isIdenticalTo($step)
 
-            ->exception(function() {
-                $object = new \Rizeway\Anchour\Step\StepFactory();
-                $object->build(array(), array());
-            })                         
-            ->isInstanceOf('\\RuntimeException')
-            ->hasMessage('The step type is required')
+            ->if($object = new \Rizeway\Anchour\Step\StepFactory())
+            ->then()
+                ->exception(function() use($object) {
+                    $object->build(array(), array());
+                })
+                ->isInstanceOf('\\RuntimeException')
+                ->hasMessage('The step type is required')
+
+            ->if($object = new \Rizeway\Anchour\Step\StepFactory())
+            ->and($adapter->class_exists = false)
+            ->and($object->setAdapter($adapter))
+            ->and($type = uniqid())
+            ->then()
+                ->exception(function() use($object, $type) {
+                    $object->build(array('type' => $type), array());
+                })
+                ->isInstanceOf('\\RuntimeException')
+                ->hasMessage(sprintf('The step %s was not found', $type))
         ;
     }
 }
