@@ -7,20 +7,27 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use jubianchi\Adapter\AdapterInterface;
+
 class StepMysql extends Step
 {
     public function __construct(array $options = array(), $connections = array(), 
         OptionsResolverInterface $options_resolver = null, OptionsResolverInterface $connections_resolver = null, AdapterInterface $adapter = null)
     {
-        $output = $status = null;
-        exec('which mysql && which mysqldump', $output, $status);
-
-        if(0 !== $status)
+        if(false === $this->check())
         {
             throw new \RuntimeException('mysql and/or mysqldump command are not available');
         }
 
         parent::__construct($options, $connections, $options_resolver, $connections_resolver, $adapter);
+    }
+
+    private function check() 
+    {
+        $output = $status = null;
+        exec('which mysql && which mysqldump', $output, $status);
+
+        return (0 === $status);
     }
 
     protected function setDefaultOptions(OptionsResolverInterface $resolver)

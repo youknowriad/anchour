@@ -7,7 +7,9 @@ class StepMysql extends test
 {
     public function test__construct()
     {
-        $this                        
+        $this      
+            ->if($adapter = new \jubianchi\Adapter\Test\Adapter())
+            ->and($adapter->exec = function($command, $output, &$status) { $status = 0; })                  
             ->object(
                 new \Rizeway\Anchour\Step\Steps\StepMysql(
                     array(
@@ -19,7 +21,8 @@ class StepMysql extends test
                         'destination' => uniqid()                      
                     ),
                     new \Symfony\Component\OptionsResolver\OptionsResolver(), 
-                    new \Symfony\Component\OptionsResolver\OptionsResolver()
+                    new \Symfony\Component\OptionsResolver\OptionsResolver(),
+                    $adapter
                 )
             )
             ->isInstanceOf('\\Rizeway\\Anchour\\Step\\Step')            

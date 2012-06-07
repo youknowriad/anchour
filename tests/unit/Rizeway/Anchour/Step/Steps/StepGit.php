@@ -22,7 +22,8 @@ class StepGit extends test
                         ),
                         array('connection' => uniqid()),
                         new \mock\Symfony\Component\OptionsResolver\OptionsResolver(),
-                        new \mock\Symfony\Component\OptionsResolver\OptionsResolver()
+                        new \mock\Symfony\Component\OptionsResolver\OptionsResolver(),
+                        $adapter
                     )
                 )
                 ->isInstanceOf('\\Rizeway\\Anchour\\Step\\Step')

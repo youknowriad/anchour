@@ -34,10 +34,12 @@ class Initializer extends test
     {
         $this
             ->if($object = new \mock\Rizeway\Anchour\Console\Initializer())
+            ->and($application = new \mock\Rizeway\Anchour\Console\Application($object))
+            ->and($loader = new \mock\Rizeway\Anchour\Config\Loader($application, ''))
             ->and($name = uniqid())
             ->and($description = uniqid())
             ->then()
-                ->object($command = $object->getInstance($name, $description))->isInstanceOf('\\Rizeway\\Anchour\\Console\\Command\\TargetCommand')
+                ->object($command = $object->getInstance($name, $description, $loader))->isInstanceOf('\\Rizeway\\Anchour\\Console\\Command\\TargetCommand')
                 ->string($command->getName())->isEqualTo($name)
                 ->string($command->getDescription())->isEqualTo($description)
         ;

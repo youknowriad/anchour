@@ -9,6 +9,7 @@ use Rizeway\Anchour\Step\Step;
 
 use jubianchi\Ftp\Ftp;
 use jubianchi\Adapter\AdapterInterface;
+use jubianchi\Output\Symfony\ConsoleOutputAdapter;
 
 class StepFtp extends Step
 {
@@ -46,7 +47,7 @@ class StepFtp extends Step
 
         $connection = $this->connections['connection'];
         $connection->connect($output);
-        $connection->setOutput($output);
+        $connection->setOutput(new ConsoleOutputAdapter($output));
         $connection->uploadDirectory(getcwd() . '/' . $this->options['local_dir'], $this->options['remote_dir']);
 
         error_reporting($level);

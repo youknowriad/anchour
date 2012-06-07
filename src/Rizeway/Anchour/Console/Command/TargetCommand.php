@@ -1,7 +1,6 @@
 <?php
 namespace Rizeway\Anchour\Console\Command;
 
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -12,8 +11,8 @@ class TargetCommand extends Command
 {
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->loader->resolveRequiredVariablesForCommand($this->getName(), $output);
-        $runner = new StepRunner($this->loader->getCommandSteps($this->getName()));
+        $this->getLoader()->resolveRequiredVariablesForCommand($this->getName(), $output);
+        $runner = new StepRunner($this->getLoader()->getCommandSteps($this->getName()));
         $runner->run($output);
     }
 }
