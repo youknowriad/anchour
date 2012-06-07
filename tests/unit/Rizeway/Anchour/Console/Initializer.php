@@ -12,8 +12,8 @@ class Initializer extends test
             ->and($application = new \mock\Rizeway\Anchour\Console\Application($object))
             ->and($loader = new \mock\Rizeway\Anchour\Config\Loader($application, ''))
             ->and($loader->getMockController()->getCommands = array(
-                'foo' => 'Foo command',
-                'bar' => 'Bar command'
+                'foo' => uniqid(),
+                'bar' => uniqid()
             ))
             ->and($fooCommand = new \mock\Symfony\Component\Console\Command\Command('foo'))
             ->and($barCommand = new \mock\Symfony\Component\Console\Command\Command('bar'))

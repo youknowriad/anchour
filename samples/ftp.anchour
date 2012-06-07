@@ -1,0 +1,22 @@
+connections:
+    MyFTP:
+        type: "ftp"
+        options:
+            host: %ftp_host%
+            username: %ftp_username%
+            password: %ftp_password%
+
+commands:
+    ftp:
+        description: "FTP step sample"
+
+        require:
+            ftp_host: "FTP host"
+            ftp_username: "FTP username"
+            ftp_password: "FTP password"
+
+        steps:
+            -
+                type: "ftp"
+                connections:
+                    connection: "MyFTP"

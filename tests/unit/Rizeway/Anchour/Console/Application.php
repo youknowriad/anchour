@@ -25,4 +25,31 @@ class Application extends test
                     ->call('renderException')->once()
         ;
     }
+
+    public function testGetAdapter()
+    {
+        $this
+            ->if($initializer = new \mock\Rizeway\Anchour\Console\Initializer())
+            ->and($object = new \mock\Rizeway\Anchour\Console\Application($initializer))
+            ->then()
+                ->object($object->getAdapter())->isInstanceOf('\\jubianchi\\Adapter\\AdapterInterface')
+
+            ->if($adapter = new \jubianchi\Adapter\Test\Adapter())
+            ->and($object->setAdapter($adapter))
+            ->then()
+                ->object($object->getAdapter())->isIdenticalTo($adapter)
+        ;
+    }
+
+    public function testSetAdapter()
+    {
+        $this
+            ->if($initializer = new \mock\Rizeway\Anchour\Console\Initializer())
+            ->and($object = new \mock\Rizeway\Anchour\Console\Application($initializer))
+            ->and($object->setAdapter(null))
+            ->then()
+                ->object($object->setAdapter(null))->isIdenticalTo($object)
+                ->object($object->setAdapter(new \jubianchi\Adapter\Test\Adapter()))->isIdenticalTo($object)
+        ;
+    }
 }

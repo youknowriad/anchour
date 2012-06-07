@@ -8,13 +8,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Rizeway\Anchour\Step\Step;
 
 use jubianchi\Ftp\Ftp;
+use jubianchi\Adapter\AdapterInterface;
 
 class StepFtp extends Step
 {
     public function __construct(array $options = array(), $connections = array(), 
         OptionsResolverInterface $options_resolver = null, OptionsResolverInterface $connections_resolver = null, AdapterInterface $adapter = null)
     {
-        if(false === extension_loaded('ftp'))
+        $this->setAdapter($adapter);
+
+        if(false === $this->getAdapter()->extension_loaded('ftp'))
         {
             throw new \RuntimeException('FTP extension is not loaded');
         }
