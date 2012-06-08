@@ -36,10 +36,10 @@ class StepFtp extends Step
     {
         error_reporting(($level = error_reporting()) ^ E_WARNING);
 
-        $connection = $this->connections['connection'];
+        $connection = $this->getConnection('connection');
         $connection->connect($output);
         $connection->setOutput(new ConsoleOutputAdapter($output));
-        $connection->uploadDirectory(getcwd() . '/' . $this->options['local_dir'], $this->options['remote_dir']);
+        $connection->uploadDirectory(getcwd() . '/' . $this->getOption('local_dir'), $this->getOption('remote_dir'));
 
         error_reporting($level);
     }    

@@ -34,11 +34,11 @@ class StepSsh extends Step
 
     public function run(OutputInterface $output)
     {
-        $this->getConnection()->connect($output);
+        $this->getConnection('connection')->connect($output);
 
-        foreach ($this->options['commands'] as $command)
+        foreach ($this->getOption('commands') as $command)
         {
-            $this->getConnection()->exec($command, function($stdio, $stderr) use($output) {
+            $this->getConnection('connection')->exec($command, function($stdio, $stderr) use($output) {
               $output->write($stdio);
 
               if('' !== $stderr)
@@ -47,12 +47,5 @@ class StepSsh extends Step
               }
             });
         }
-    }
-
-    /**
-     * @return string
-     */
-    protected function getConnection() {
-        return  $this->connections['connection'];
     }
 }

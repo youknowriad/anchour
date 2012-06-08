@@ -37,10 +37,10 @@ class StepMysql extends Step
     {
         $file = $this->getAdapter()->tempnam(sys_get_temp_dir(), uniqid());
 
-        $source = $this->connections['source'];
-        $destination = $this->connections['destination'];
+        $source = $this->getConnection('source');
+        $destination = $this->getConnection('destination');
 
-        if(true === $this->options['drop_database'])
+        if(true === $this->getOption('drop_database'))
         {
             $cmd = sprintf(
                 'mysql -h%s -u%s%s -e "DROP DATABASE \`%s\`"',
@@ -54,7 +54,7 @@ class StepMysql extends Step
             $this->getAdapter()->passthru($cmd);
         }
 
-        if(true === $this->options['create_database'])
+        if(true === $this->getOption('create_database'))
         {
             $cmd = sprintf(
                 'mysql -h%s -u%s%s -e "CREATE DATABASE IF NOT EXISTS \`%s\`"',

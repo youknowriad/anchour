@@ -22,7 +22,7 @@ class StepCliPhar extends Step
 
     public function run(OutputInterface $output)
     {
-        $path = realpath($this->options['output']) . DIRECTORY_SEPARATOR . $this->options['name'];
+        $path = realpath($this->getOption('output') . DIRECTORY_SEPARATOR . $this->getOption('name'));
 
         if($this->getAdapter()->file_exists($path)) {
             $this->getAdapter()->unlink($path);
@@ -31,19 +31,19 @@ class StepCliPhar extends Step
         $output->writeln(sprintf('Creating Cli Phar archive <info>%s</info>', $path));
         $phar = new \Phar($path);
 
-        $directory = realpath($this->options['directory']);
+        $directory = realpath($this->getOption('directory'));
         $output->writeln(sprintf('Adding directory <info>%s</info>', $directory));
-        if(null !== $this->options['regexp'])
+        if(null !== $this->getOption('regexp'))
         {
-            $output->writeln(sprintf('Filtering with regexp <info>`%s`</info>', $this->options['regexp']));
+            $output->writeln(sprintf('Filtering with regexp <info>`%s`</info>', $this->getOption('regexp')));
         }
-        $phar->buildFromDirectory($directory, sprintf('`%s`', $this->options['regexp']));        
+        $phar->buildFromDirectory($directory, sprintf('`%s`', $this->getOption('regexp')));        
 
-        $stub = realpath($this->options['stub']);
+        $stub = realpath($this->getOption('stub'));
         $index = null;
         $output->writeln(sprintf('Adding stub <info>%s</info>', $stub));
 
-        if(true === $this->options['chmod'])
+        if(true === $this->getOption('chmod'))
         {
             $output->writeln(sprintf('Adding execution permission to Phar archive <info>%s</info>', $path));
             $this->getAdapter()->exec(sprintf('chmod a+x %s', $path));

@@ -24,16 +24,16 @@ class StepGit extends StepSsh
 
     public function run(OutputInterface $output)
     {
-        if (true === $this->options['remove_existing'])
+        if (true === $this->getOption('remove_existing'))
         {
-            $this->options['commands'][] = sprintf('rm -rf %s', $this->options['remote_dir']);
+            $this->options['commands'][] = sprintf('rm -rf %s', $this->getOption('remote_dir'));
         }
 
-        $this->options['commands'][] = sprintf('git clone %s %s', $this->options['repository'], $this->options['remote_dir']);
+        $this->options['commands'][] = sprintf('git clone %s %s', $this->getOption('repository'), $this->getOption('remote_dir'));
 
-        if (true === $this->options['clean_scm'])
+        if (true === $this->getOption('clean_scm'))
         {
-            $this->options['commands'][] = sprintf('rm -rf %s/.git', $this->options['remote_dir']);
+            $this->options['commands'][] = sprintf('rm -rf %s/.git', $this->getOption('remote_dir'));
         }
 
         parent::run($output);

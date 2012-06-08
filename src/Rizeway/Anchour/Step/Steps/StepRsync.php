@@ -36,23 +36,23 @@ class StepRsync extends Step
 
     public function run(OutputInterface $output)
     {
-        if(isset($this->connections['source'])) {
+        if(null !== $this->getConnection('source')) {
             $source = sprintf(
                 '%s@%s:%s',
-                $this->connections['source']->getUsername(),
-                $this->connections['source']->getHost(),
-                $this->options['source_dir']
+                $this->getConnection('source')->getUsername(),
+                $this->getConnection('source')->getHost(),
+                $this->getOption('source_dir')
             );
 
-            $destination = $this->options['destination_dir'];
+            $destination = $this->getOption('destination_dir');
         } else {
-            $source = $this->options['source_dir'];
+            $source = $this->getOption('source_dir');
 
             $destination = sprintf(
                 '%s@%s:%s',
-                $this->connections['destination']->getUsername(),
-                $this->connections['destination']->getHost(),
-                $this->options['destination_dir']
+                $this->getConnection('destination')->getUsername(),
+                $this->getConnection('destination')->getHost(),
+                $this->getOption('destination_dir')
             );
         }
 
@@ -60,8 +60,8 @@ class StepRsync extends Step
         $this->getAdapter()->exec(
           sprintf(
             'rsync %s -e "ssh -i %s" %s %s 2>&1',
-            $this->options['cli_args'],
-            $this->options['key_file'],
+            $this->getOption('cli_args'),
+            $this->getOption('key_file'),
             $source,
             $destination
           ),

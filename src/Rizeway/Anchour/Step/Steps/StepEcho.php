@@ -15,6 +15,6 @@ class StepEcho extends Step
 
     public function run(OutputInterface $output)
     {
-        $output->writeln($this->options['message']);
+        $output->writeln($this->getOption('message'));
     }
 }

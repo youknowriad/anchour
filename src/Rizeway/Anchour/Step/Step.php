@@ -13,13 +13,13 @@ abstract class Step implements StepInterface, AdaptableInterface
      * The step options
      * @var mixed[]
      */
-    protected $options;
+    private $options;
     
     /**
      * The connections used by the step
-     * @var string[]
+     * @var \Rizeway\Anchour\Connection\ConnectionInterface[]
      */
-    protected $connections;
+    private $connections;
 
     /**
      * @var \Rizeway\Anchour\Step\Definition\Definition
@@ -31,7 +31,7 @@ abstract class Step implements StepInterface, AdaptableInterface
      */
     private $adapter;
 
-    public function __construct(array $options = array(), array $connections = array(), AdapterInterface $adapter = null)
+    final public function __construct(array $options = array(), array $connections = array(), AdapterInterface $adapter = null)
     {
         $this->setAdapter($adapter);
 
@@ -71,9 +71,35 @@ abstract class Step implements StepInterface, AdaptableInterface
         $this->getDefinition()->addOption($name, $type, $default);
     }
 
+    public function hasOption($name) 
+    {
+        return array_key_exists($name, $this->options);
+    }
+
+    public function getOption($name) {
+        if(false === $this->hasOption($name)) {
+            throw new \InvalidArgumentException(sprintf('Option %s is not defined', $name));
+        }
+
+        return $this->options[$name];
+    }
+
     public function addConnection($name, $type, $default = null) 
     {
         $this->getDefinition()->addConnection($name, $type, $default);
+    }
+
+    public function hasConnection($name) 
+    {
+        return array_key_exists($name, $this->connections);
+    }
+
+    public function getConnection($name) {
+        if(false === $this->hasConnection($name)) {
+            throw new \InvalidArgumentException(sprintf('Connection %s is not defined', $name));
+        }
+
+        return $this->connections[$name];
     }
 
     private function getDefinition()

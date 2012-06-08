@@ -208,7 +208,7 @@ class Loader
         foreach ($array as $value) {
             if (is_array($value)) {
                 $variables += $this->getVariablesToAskInArray($value);
-            } elseif (preg_match('/^%([^0-9\-]+[a-zA-Z0-9_]*)%$/', $value)) {
+            } elseif (preg_match('/%([^0-9\-]+[a-zA-Z0-9_]*)%/', $value)) {
                 $key = substr($value, 1, strlen($value) - 2);
                 $variables[$key] = $key;
             }
