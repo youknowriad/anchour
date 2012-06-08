@@ -2,7 +2,6 @@
 
 namespace Rizeway\Anchour\Step\Steps;
 
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use Rizeway\Anchour\Step\Step;
@@ -10,35 +9,27 @@ use Rizeway\Anchour\Step\Step;
 use jubianchi\Ftp\Ftp;
 use jubianchi\Adapter\AdapterInterface;
 use jubianchi\Output\Symfony\ConsoleOutputAdapter;
+use Rizeway\Anchour\Step\Definition\Definition;
 
 class StepFtp extends Step
 {
-    public function __construct(array $options = array(), $connections = array(), 
-        OptionsResolverInterface $options_resolver = null, OptionsResolverInterface $connections_resolver = null, AdapterInterface $adapter = null)
+    public function initialize()
     {
-        $this->setAdapter($adapter);
-
         if(false === $this->getAdapter()->extension_loaded('ftp'))
         {
             throw new \RuntimeException('FTP extension is not loaded');
         }
-
-        parent::__construct($options, $connections, $options_resolver, $connections_resolver, $adapter);
     }
 
-    protected function setDefaultOptions(OptionsResolverInterface $resolver)
+    protected function setDefaultOptions()
     {
-        $resolver->setDefaults(array(
-            'local_dir' => '',
-            'remote_dir' => ''
-        ));
+        $this->addOption('local_dir', Definition::TYPE_OPTIONAL);
+        $this->addOption('remote_dir', Definition::TYPE_OPTIONAL);
     }
 
-    protected function setDefaultConnections(OptionsResolverInterface $resolver)
+    protected function setDefaultConnections()
     {
-        $resolver->setRequired(array(
-            'connection'
-        ));
+        $this->addConnection('connection', Definition::TYPE_REQUIRED);
     }
 
     public function run(OutputInterface $output)

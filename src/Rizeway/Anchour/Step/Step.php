@@ -1,9 +1,7 @@
 <?php
-
 namespace Rizeway\Anchour\Step;
 
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Rizeway\Anchour\Step\Definition\Definition;
 
 use jubianchi\Adapter\AdaptableInterface;
 use jubianchi\Adapter\AdapterInterface;
@@ -11,7 +9,6 @@ use jubianchi\Adapter\Adapter;
 
 abstract class Step implements StepInterface, AdaptableInterface
 {
-
     /**
      * The step options
      * @var mixed[]
@@ -24,26 +21,27 @@ abstract class Step implements StepInterface, AdaptableInterface
      */
     protected $connections;
 
+    /**
+     * @var \Rizeway\Anchour\Step\Definition\Definition
+     */
+    private $definition;
 
     /**
      * @var \jubianchi\Adapter\AdapterInterface
      */
     private $adapter;
 
-    public function __construct(array $options = array(), $connections = array(), 
-        OptionsResolverInterface $options_resolver = null, OptionsResolverInterface $connections_resolver = null, AdapterInterface $adapter = null)
+    public function __construct(array $options = array(), array $connections = array(), AdapterInterface $adapter = null)
     {
         $this->setAdapter($adapter);
 
-        // Resolve Options
-        $options_resolver = $options_resolver ? $options_resolver : new OptionsResolver();
-        $this->setDefaultOptions($options_resolver);
-        $this->options = $options_resolver->resolve($options);
+        $this->initialize();
 
-        // Resolve Connections
-        $connections_resolver = $connections_resolver ? $connections_resolver : new OptionsResolver();
-        $this->setDefaultConnections($connections_resolver);
-        $this->connections = $connections_resolver->resolve($connections);
+        $this->setDefaultOptions();
+        $this->options = $this->getDefinition()->bindOptions($options);
+
+        $this->setDefaultConnections();
+        $this->connections = $this->getDefinition()->bindConnections($connections);
     }
 
     /**
@@ -68,15 +66,34 @@ abstract class Step implements StepInterface, AdaptableInterface
         return $this->adapter;
     }
 
+    public function addOption($name, $type, $default = null) 
+    {
+        $this->getDefinition()->addOption($name, $type, $default);
+    }
+
+    public function addConnection($name, $type, $default = null) 
+    {
+        $this->getDefinition()->addConnection($name, $type, $default);
+    }
+
+    private function getDefinition()
+    {
+        if(null === $this->definition) {
+            $this->definition = new Definition();
+        }
+
+        return $this->definition;
+    }
+
     /**
      * Define The Step options 
-     * @param OptionsResolverInterface $resolver 
      */
-    abstract protected function setDefaultOptions(OptionsResolverInterface $resolver);
+    abstract protected function setDefaultOptions();
 
     /**
      * Overload to define the connections used by the step
-     * @param OptionsResolverInterface $resolver
      */
-    protected function setDefaultConnections(OptionsResolverInterface $resolver) {}
+    protected function setDefaultConnections() {}
+
+    protected function initialize() {}
 }

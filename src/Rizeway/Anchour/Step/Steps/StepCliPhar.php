@@ -2,26 +2,22 @@
 
 namespace Rizeway\Anchour\Step\Steps;
 
-use Rizeway\Anchour\Step\Step;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+
+use Rizeway\Anchour\Step\Step;
+use Rizeway\Anchour\Step\Definition\Definition;
 
 class StepCliPhar extends Step
 {
-    protected function setDefaultOptions(OptionsResolverInterface $resolver)
+    protected function setDefaultOptions()
     {
-        $resolver->setRequired(array(
-            'directory',
-            'name',
-            'stub'
-        ));
+        $this->addOption('directory', Definition::TYPE_REQUIRED);
+        $this->addOption('name', Definition::TYPE_REQUIRED);
+        $this->addOption('stub', Definition::TYPE_REQUIRED);
 
-        $resolver->setDefaults(array(
-            'output' => '.',
-            'regexp' => null,
-            'chmod' => false
-        ));
+        $this->addOption('output', Definition::TYPE_OPTIONAL);
+        $this->addOption('regexp', Definition::TYPE_OPTIONAL);
+        $this->addOption('chmod', Definition::TYPE_OPTIONAL, false);
     }
 
     public function run(OutputInterface $output)
@@ -31,7 +27,6 @@ class StepCliPhar extends Step
         if($this->getAdapter()->file_exists($path)) {
             $this->getAdapter()->unlink($path);
         }
-
         
         $output->writeln(sprintf('Creating Cli Phar archive <info>%s</info>', $path));
         $phar = new \Phar($path);

@@ -1,49 +1,36 @@
 <?php
-
 namespace Rizeway\Anchour\Step\Steps;
 
 use Rizeway\Anchour\Step\Step;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Rizeway\Anchour\Step\Definition\Definition;
+
 use Symfony\Component\Console\Output\OutputInterface;
 
 use jubianchi\Adapter\AdapterInterface;
 
 class StepMysql extends Step
 {
-    public function __construct(array $options = array(), $connections = array(), 
-        OptionsResolverInterface $options_resolver = null, OptionsResolverInterface $connections_resolver = null, AdapterInterface $adapter = null)
-    {
-        if(false === $this->check())
+    public function initialize()
+    {        
+        $output = $status = null;
+        $this->getAdapter()->exec('which mysql && which mysqldump', $output, $status);
+
+        if(0 !== $status)
         {
             throw new \RuntimeException('mysql and/or mysqldump command are not available');
         }
-
-        parent::__construct($options, $connections, $options_resolver, $connections_resolver, $adapter);
     }
 
-    private function check() 
+    protected function setDefaultOptions()
     {
-        $output = $status = null;
-        exec('which mysql && which mysqldump', $output, $status);
-
-        return (0 === $status);
+        $this->addOption('create_database', Definition::TYPE_OPTIONAL, true);
+        $this->addOption('drop_database', Definition::TYPE_OPTIONAL, true);
     }
 
-    protected function setDefaultOptions(OptionsResolverInterface $resolver)
+    protected function setDefaultConnections()
     {
-        $resolver->setDefaults(array(
-            'create_database' => true,
-            'drop_database' => true,
-        ));
-    }
-
-    protected function setDefaultConnections(OptionsResolverInterface $resolver)
-    {
-        $resolver->setRequired(array(
-            'source',
-            'destination'
-        ));
+        $this->addConnection('source', Definition::TYPE_REQUIRED);
+        $this->addConnection('destination', Definition::TYPE_REQUIRED);
     }
 
     public function run(OutputInterface $output)

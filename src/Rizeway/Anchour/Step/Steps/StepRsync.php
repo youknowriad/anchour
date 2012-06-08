@@ -1,47 +1,37 @@
 <?php
-
 namespace Rizeway\Anchour\Step\Steps;
 
 use Rizeway\Anchour\Step\Step;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Rizeway\Anchour\Step\Definition\Definition;
+
 use Symfony\Component\Console\Output\OutputInterface;
 
 class StepRsync extends Step
 {
-    public function __construct(array $options = array(), $connections = array(), 
-        OptionsResolverInterface $options_resolver = null, OptionsResolverInterface $connections_resolver = null, AdapterInterface $adapter = null)
+    public function initialize()
     {
         $output = $status = null;
-        exec('which rsync', $output, $status);
+        $this->getAdapter()->exec('which rsync', $output, $status);
 
         if(0 !== $status)
         {
             throw new \RuntimeException('rsync command is not available');
         }
-
-        parent::__construct($options, $connections, $options_resolver, $connections_resolver, $adapter);
     }
 
-
-    protected function setDefaultOptions(OptionsResolverInterface $resolver)
+    protected function setDefaultOptions()
     {
-        $resolver->setRequired(array(
-            'key_file'
-        ));
+        $this->addOption('key_file', Definition::TYPE_REQUIRED);
 
-        $resolver->setDefaults(array(
-            'source_dir' => null,
-            'destination_dir' => null,
-            'cli_args' => '-avz --progress'
-        ));
+        $this->addOption('source_dir', Definition::TYPE_OPTIONAL);
+        $this->addOption('destination_dir', Definition::TYPE_OPTIONAL);
+        $this->addOption('cli_args', Definition::TYPE_OPTIONAL, '-avz --progress');
     }
 
-    protected function setDefaultConnections(OptionsResolverInterface $resolver)
+    protected function setDefaultConnections()
     {
-        $resolver->setDefaults(array(
-            'source' => null,
-            'destination' => null
-        ));
+        $this->addConnection('source', Definition::TYPE_OPTIONAL);
+        $this->addConnection('destination', Definition::TYPE_OPTIONAL);
     }
 
     public function run(OutputInterface $output)

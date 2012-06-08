@@ -8,14 +8,9 @@ class Step extends test
     public function test__construct()
     {
         $this 
-            ->if($resolver = new \mock\Symfony\Component\OptionsResolver\OptionsResolverInterface())
-            ->and($connection_resolover = new \mock\Symfony\Component\OptionsResolver\OptionsResolverInterface())
-            ->and($object = new \mock\Rizeway\Anchour\Step\Step(array(), array(), $resolver, $connection_resolover))            
+            ->if($object = new \mock\Rizeway\Anchour\Step\Step())            
             ->then()
-                ->object($object)->isInstanceOf('\\Rizeway\\Anchour\\Step\\StepInterface')
-                ->mock($resolver)
-                    ->call('resolve')                    
-                        ->withArguments(array())->once()
+                ->object($object)->isInstanceOf('\\Rizeway\\Anchour\\Step\\StepInterface');
         ;
     }
 
@@ -23,9 +18,7 @@ class Step extends test
     {
         $this
             ->if($adapter = new \jubianchi\Adapter\Test\Adapter())            
-            ->and($object = new \mock\Rizeway\Anchour\Step\Step(array(), array(), 
-                new \mock\Symfony\Component\OptionsResolver\OptionsResolverInterface(),
-                new \mock\Symfony\Component\OptionsResolver\OptionsResolverInterface()))
+            ->and($object = new \mock\Rizeway\Anchour\Step\Step())
             ->and($object->setAdapter(null))
             ->then()
                 ->object($object->getAdapter())->isInstanceOf('\\jubianchi\\Adapter\\AdapterInterface')
@@ -40,9 +33,7 @@ class Step extends test
     {
         $this
             ->if($adapter = new \jubianchi\Adapter\Test\Adapter())            
-            ->and($object = new \mock\Rizeway\Anchour\Step\Step(array(), array(), 
-                new \mock\Symfony\Component\OptionsResolver\OptionsResolverInterface(),
-                new \mock\Symfony\Component\OptionsResolver\OptionsResolverInterface()))
+            ->and($object = new \mock\Rizeway\Anchour\Step\Step())
             ->and($object->setAdapter(null))
             ->then()
                 ->object($object->setAdapter(null))->isIdenticalTo($object)

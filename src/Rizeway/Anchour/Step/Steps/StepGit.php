@@ -1,29 +1,25 @@
 <?php
-
 namespace Rizeway\Anchour\Step\Steps;
 
-use Rizeway\Anchour\Step\Step;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+
+use Rizeway\Anchour\Step\Step;
+use Rizeway\Anchour\Step\Definition\Definition;
 
 use jubianchi\Adapter\AdapterInterface;
 
 class StepGit extends StepSsh
 {
-    protected function setDefaultOptions(OptionsResolverInterface $resolver)
+    protected function setDefaultOptions()
     {
-        parent::setDefaultOptions($resolver);
+        parent::setDefaultOptions();
 
-        $resolver->setRequired(array(
-            'repository',
-            'remote_dir',
-        ));
+        $this->addOption('repository', Definition::TYPE_REQUIRED);
+        $this->addOption('remote_dir', Definition::TYPE_REQUIRED);
 
-        $resolver->setDefaults(array(
-            'clean_scm' => true,
-            'remove_existing' => false,
-            'commands' => array()
-        ));
+        $this->addOption('clean_scm', Definition::TYPE_OPTIONAL, true);
+        $this->addOption('remove_existing', Definition::TYPE_OPTIONAL, false);
+        $this->addOption('commands', Definition::TYPE_OPTIONAL, array());
     }
 
     public function run(OutputInterface $output)
