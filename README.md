@@ -166,6 +166,19 @@ This step allows you to maka a Mysql Export/Import using two MySql Connections
         source: "MySQL1"
         destination: "MySQL2"
 
+CliPhar
+-----
+This step allows you to build a CLI Phar archive
+
+### Usage
+
+    type: "cliPhar"
+    options:
+        directory: "."
+        regexp: "^[^\.].*/a/.*|regexp/.*|used/(?!to).*|filter\.php"
+        stub: "path/to/phar/stub.php"
+        name: "name.phar"
+        chmod: true
 
 Variables
 =========

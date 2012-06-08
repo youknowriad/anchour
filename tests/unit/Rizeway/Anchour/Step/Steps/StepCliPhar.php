@@ -3,20 +3,20 @@ namespace tests\unit\Rizeway\Anchour\Step\Steps;
 
 use mageekguy\atoum\test;
 
-class StepPhar extends test
+class StepCliPhar extends test
 {
     public function test__construct()
     {
         $this                        
             ->object(
-                new \Rizeway\Anchour\Step\Steps\StepPhar(
+                new \Rizeway\Anchour\Step\Steps\StepCliPhar(
                     array(
                         'directory' => uniqid(),
                         'name'  => uniqid(),
                         'stub'  => uniqid(),
-                        'index' => null,
                         'output' => '.',
-                        'regexp' => null
+                        'regexp' => null,
+                        'chmod' => true
                     ),
                     array(),
                     new \mock\Symfony\Component\OptionsResolver\OptionsResolver(),
@@ -25,7 +25,7 @@ class StepPhar extends test
             )
             ->isInstanceOf('\\Rizeway\\Anchour\\Step\\Step')            
             ->exception(function() {
-                new \Rizeway\Anchour\Step\Steps\StepPhar(array(),array(),
+                new \Rizeway\Anchour\Step\Steps\StepCliPhar(array(),array(),
                     new \mock\Symfony\Component\OptionsResolver\OptionsResolver(),
                     new \mock\Symfony\Component\OptionsResolver\OptionsResolver());
             })

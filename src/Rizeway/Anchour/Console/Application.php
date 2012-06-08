@@ -29,7 +29,7 @@ class Application extends BaseApplication implements AdaptableInterface
     {
         $this->setAdapter($adapter);
 
-        parent::__construct('Anchour');
+        parent::__construct('Anchour', ANCHOUR_VERSION);
 
         $this->setCatchExceptions(true);
 

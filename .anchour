@@ -5,9 +5,10 @@ commands:
 
         steps:
             -
-                type: "phar"
+                type: "cliPhar"
                 options:
                     directory: "."
-                    regexp: "`^bin/.*|src/.*|vendor/(?!mageekguy).*|anchour\.php`"
-                    stub: "anchour.php"
+                    regexp: "^[^\.].*/bin/.*|src/.*|vendor/(?!mageekguy).*|anchour\.php"
+                    stub: "src/Rizeway/Anchour/Phar/stub.php"
                     name: "anchour.phar"
+                    chmod: true
