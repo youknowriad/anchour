@@ -36,7 +36,7 @@ class StepRsync extends Step
 
     public function run(OutputInterface $output)
     {
-        if(null !== $this->getConnection('source')) {
+        if(true === $this->hasConnection('source')) {
             $source = sprintf(
                 '%s@%s:%s',
                 $this->getConnection('source')->getUsername(),

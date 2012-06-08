@@ -4,7 +4,7 @@ namespace Rizeway\Anchour\Step\Definition;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class Definition 
+class Definition implements DefinitionInterface
 {
     const TYPE_OPTIONAL = 1;
     const TYPE_REQUIRED = 2;

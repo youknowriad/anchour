@@ -2,12 +2,12 @@
 namespace Rizeway\Anchour\Step;
 
 use Rizeway\Anchour\Step\Definition\Definition;
+use Rizeway\Anchour\Step\Definition\DefinitionInterface;
 
-use jubianchi\Adapter\AdaptableInterface;
 use jubianchi\Adapter\AdapterInterface;
 use jubianchi\Adapter\Adapter;
 
-abstract class Step implements StepInterface, AdaptableInterface
+abstract class Step implements StepInterface
 {
     /**
      * The step options
@@ -31,9 +31,10 @@ abstract class Step implements StepInterface, AdaptableInterface
      */
     private $adapter;
 
-    final public function __construct(array $options = array(), array $connections = array(), AdapterInterface $adapter = null)
+    final public function __construct(array $options = array(), array $connections = array(), AdapterInterface $adapter = null, DefinitionInterface $definition = null)
     {
         $this->setAdapter($adapter);
+        $this->setDefinition($definition);
 
         $this->initialize();
 
@@ -73,7 +74,7 @@ abstract class Step implements StepInterface, AdaptableInterface
 
     public function hasOption($name) 
     {
-        return array_key_exists($name, $this->options);
+        return isset($this->options[$name]);
     }
 
     public function getOption($name) {
@@ -91,7 +92,7 @@ abstract class Step implements StepInterface, AdaptableInterface
 
     public function hasConnection($name) 
     {
-        return array_key_exists($name, $this->connections);
+        return isset($this->connections[$name]);
     }
 
     public function getConnection($name) {
@@ -102,6 +103,9 @@ abstract class Step implements StepInterface, AdaptableInterface
         return $this->connections[$name];
     }
 
+    /**
+     * @return \Rizeway\Anchour\Step\Definition\DefinitionInterface
+     */
     private function getDefinition()
     {
         if(null === $this->definition) {
@@ -109,6 +113,13 @@ abstract class Step implements StepInterface, AdaptableInterface
         }
 
         return $this->definition;
+    }
+
+    public function setDefinition(DefinitionInterface $definition = null)
+    {
+        $this->definition = $definition;
+
+        return $this;
     }
 
     /**
