@@ -34,6 +34,8 @@ class StepSsh extends Step
 
     public function run(OutputInterface $output)
     {
+        error_reporting(($level = error_reporting()) ^ E_WARNING);
+
         $this->getConnection('connection')->connect($output);
 
         foreach ($this->getOption('commands') as $command)
@@ -47,5 +49,7 @@ class StepSsh extends Step
               }
             });
         }
+
+        error_reporting($level);
     }
 }

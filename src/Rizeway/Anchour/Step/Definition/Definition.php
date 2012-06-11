@@ -19,7 +19,7 @@ class Definition implements DefinitionInterface
     {
         $resolver = new OptionsResolver();
         $resolver->setDefaults($this->options); 
-        $resolver->setRequired(array_values($this->requiredOptions)); 
+        $resolver->setRequired($this->requiredOptions); 
 
         return $resolver->resolve($options);
     }

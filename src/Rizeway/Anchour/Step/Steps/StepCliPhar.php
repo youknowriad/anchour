@@ -15,14 +15,14 @@ class StepCliPhar extends Step
         $this->addOption('name', Definition::TYPE_REQUIRED);
         $this->addOption('stub', Definition::TYPE_REQUIRED);
 
-        $this->addOption('output', Definition::TYPE_OPTIONAL);
+        $this->addOption('output', Definition::TYPE_OPTIONAL, '.');
         $this->addOption('regexp', Definition::TYPE_OPTIONAL);
         $this->addOption('chmod', Definition::TYPE_OPTIONAL, false);
     }
 
     public function run(OutputInterface $output)
     {
-        $path = realpath($this->getOption('output') . DIRECTORY_SEPARATOR . $this->getOption('name'));
+        $path = realpath(rtrim($this->getOption('output'), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $this->getOption('name'));
 
         if($this->getAdapter()->file_exists($path)) {
             $this->getAdapter()->unlink($path);
@@ -49,6 +49,6 @@ class StepCliPhar extends Step
             $this->getAdapter()->exec(sprintf('chmod a+x %s', $path));
         }
 
-        $phar->setStub(file_get_contents($this->options['stub']));
+        $phar->setStub(file_get_contents($this->getOption('stub')));
     }
 }
