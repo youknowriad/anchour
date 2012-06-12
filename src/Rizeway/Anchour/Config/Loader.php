@@ -8,6 +8,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Rizeway\Anchour\Console\Application;
 use Rizeway\Anchour\Step\StepFactory;
 use Rizeway\Anchour\Connection\ConnectionFactory;
+use Rizeway\Anchour\Config\Validator;
 
 class Loader
 {
@@ -15,7 +16,7 @@ class Loader
      * Yaml Config
      * @var mixed[]
      */
-    protected $config;
+    protected $config = array();
 
     /**
      * The anchour console
@@ -38,6 +39,9 @@ class Loader
     {
         $this->config = Yaml::parse($filename);
         $this->console = $console;
+
+        $validator = new Validator();
+        $validator->validate((array)$this->config);
     }
 
     /**
@@ -46,12 +50,12 @@ class Loader
      */
     public function getCommands() 
     {
-        if (!isset($this->config['commands'])) {
+        if (!isset($this->config['anchour']['commands'])) {
             throw new \Exception('No commands defined');
         }
 
         $commands = array();
-        foreach ($this->config['commands'] as $name => $command_config)
+        foreach ($this->config['anchour']['commands'] as $name => $command_config)
         {
             $description = isset($command_config['description']) ? $command_config['description'] : $name;
             $commands[$name] = $description;
@@ -96,6 +100,8 @@ class Loader
             $connections_config =  isset($step['connections']) ? $step['connections'] : array();
             foreach ($connections_config as $name => $connection) {
                 if (!isset($connection_objects[$connection])) {
+
+
                     $connection_objects[$connection] = $factory->build($this->getConnection($connection));
                 }
             }
@@ -134,15 +140,16 @@ class Loader
         // Replace variables with values
         foreach ($steps as $key => $step) {
             $connections = isset($step['connections']) ? $step['connections'] : array();
+
             foreach ($connections as $connection) {
-                if (isset($this->config['connections'][$connection]['options'])) {
-                    $this->config['connections'][$connection]['options'] = 
-                        $this->replaceValuesInRecursiveArray($this->config['connections'][$connection]['options'], $required_variables_values);
+                if (isset($this->config['anchour']['connections'][$connection]['options'])) {
+                    $this->config['anchour']['connections'][$connection]['options'] = 
+                        $this->replaceValuesInRecursiveArray($this->config['anchour']['connections'][$connection]['options'], $required_variables_values);
                 }
             }
-            if (isset($this->config['commands'][$command_name]['steps'][$key]['options'])) {
-                $this->config['commands'][$command_name]['steps'][$key]['options'] = 
-                    $this->replaceValuesInRecursiveArray($this->config['commands'][$command_name]['steps'][$key]['options'], $required_variables_values);
+            if (isset($this->config['anchour']['commands'][$command_name]['steps'][$key]['options'])) {
+                $this->config['anchour']['commands'][$command_name]['steps'][$key]['options'] = 
+                    $this->replaceValuesInRecursiveArray($this->config['anchour']['commands'][$command_name]['steps'][$key]['options'], $required_variables_values);
             }
         }
     }
@@ -152,11 +159,11 @@ class Loader
      */
     protected function getCommand($name)
     {
-        if (!isset($this->config['commands']) || !isset($this->config['commands'][$name])) {
+        if (!isset($this->config['anchour']['commands']) || !isset($this->config['anchour']['commands'][$name])) {
             throw new \Exception(sprintf('The command %s was not found', $name));
         }
 
-        return $this->config['commands'][$name];
+        return $this->config['anchour']['commands'][$name];
     }
 
     /**
@@ -164,11 +171,11 @@ class Loader
      */
     protected function getConnection($name)
     {
-        if (!isset($this->config['connections']) || !isset($this->config['connections'][$name])) {
+        if (!isset($this->config['anchour']['connections']) || !isset($this->config['anchour']['connections'][$name])) {
             throw new \Exception(sprintf('The connection %s was not defined', $name));
         }
 
-        return $this->config['connections'][$name];
+        return $this->config['anchour']['connections'][$name];
     }
 
     /**
@@ -208,7 +215,7 @@ class Loader
         foreach ($array as $value) {
             if (is_array($value)) {
                 $variables += $this->getVariablesToAskInArray($value);
-            } elseif (preg_match('/^%([^0-9\-]+[a-zA-Z0-9_]*)%$/', $value)) {
+            } elseif (preg_match('/%([^0-9\-]+[a-zA-Z0-9_]*)%/', $value)) {
                 $key = substr($value, 1, strlen($value) - 2);
                 $variables[$key] = $key;
             }

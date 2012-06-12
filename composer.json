@@ -27,6 +27,7 @@
         "symfony/yaml": "2.0.14",
         "symfony/console": "2.0.14",
         "symfony/options-resolver": "*",
+        "symfony/config": "*",
         "yohang/oossh": "*",
         "mageekguy/atoum": "*"
     }

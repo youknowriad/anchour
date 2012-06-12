@@ -1,49 +1,48 @@
 <?php
-
 namespace Rizeway\Anchour\Step;
 
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Rizeway\Anchour\Step\Definition\Definition;
+use Rizeway\Anchour\Step\Definition\DefinitionInterface;
 
-use jubianchi\Adapter\AdaptableInterface;
 use jubianchi\Adapter\AdapterInterface;
 use jubianchi\Adapter\Adapter;
 
-abstract class Step implements StepInterface, AdaptableInterface
+abstract class Step implements StepInterface
 {
-
     /**
      * The step options
      * @var mixed[]
      */
-    protected $options;
+    private $options;
     
     /**
      * The connections used by the step
-     * @var string[]
+     * @var \Rizeway\Anchour\Connection\ConnectionInterface[]
      */
-    protected $connections;
+    private $connections;
 
+    /**
+     * @var \Rizeway\Anchour\Step\Definition\Definition
+     */
+    private $definition;
 
     /**
      * @var \jubianchi\Adapter\AdapterInterface
      */
     private $adapter;
 
-    public function __construct(array $options = array(), $connections = array(), 
-        OptionsResolverInterface $options_resolver = null, OptionsResolverInterface $connections_resolver = null, AdapterInterface $adapter = null)
+    final public function __construct(array $options = array(), array $connections = array(), AdapterInterface $adapter = null, DefinitionInterface $definition = null)
     {
         $this->setAdapter($adapter);
+        $this->setDefinition($definition);
 
-        // Resolve Options
-        $options_resolver = $options_resolver ? $options_resolver : new OptionsResolver();
-        $this->setDefaultOptions($options_resolver);
-        $this->options = $options_resolver->resolve($options);
+        $this->initialize();
 
-        // Resolve Connections
-        $connections_resolver = $connections_resolver ? $connections_resolver : new OptionsResolver();
-        $this->setDefaultConnections($connections_resolver);
-        $this->connections = $connections_resolver->resolve($connections);
+        $this->setDefaultOptions();
+        $this->options = $this->getDefinition()->bindOptions($options);
+
+        $this->setDefaultConnections();
+        $this->connections = $this->getDefinition()->bindConnections($connections);
     }
 
     /**
@@ -68,15 +67,70 @@ abstract class Step implements StepInterface, AdaptableInterface
         return $this->adapter;
     }
 
+    public function addOption($name, $type, $default = null) 
+    {
+        $this->getDefinition()->addOption($name, $type, $default);
+    }
+
+    public function hasOption($name) 
+    {
+        return isset($this->options[$name]);
+    }
+
+    public function getOption($name) {
+        if(false === $this->hasOption($name)) {
+            throw new \InvalidArgumentException(sprintf('Option %s is not defined', $name));
+        }
+
+        return $this->options[$name];
+    }
+
+    public function addConnection($name, $type, $default = null) 
+    {
+        $this->getDefinition()->addConnection($name, $type, $default);
+    }
+
+    public function hasConnection($name) 
+    {
+        return isset($this->connections[$name]);
+    }
+
+    public function getConnection($name) {
+        if(false === $this->hasConnection($name)) {
+            throw new \InvalidArgumentException(sprintf('Connection %s is not defined', $name));
+        }
+
+        return $this->connections[$name];
+    }
+
+    /**
+     * @return \Rizeway\Anchour\Step\Definition\DefinitionInterface
+     */
+    private function getDefinition()
+    {
+        if(null === $this->definition) {
+            $this->definition = new Definition();
+        }
+
+        return $this->definition;
+    }
+
+    public function setDefinition(DefinitionInterface $definition = null)
+    {
+        $this->definition = $definition;
+
+        return $this;
+    }
+
     /**
      * Define The Step options 
-     * @param OptionsResolverInterface $resolver 
      */
-    abstract protected function setDefaultOptions(OptionsResolverInterface $resolver);
+    abstract protected function setDefaultOptions();
 
     /**
      * Overload to define the connections used by the step
-     * @param OptionsResolverInterface $resolver
      */
-    protected function setDefaultConnections(OptionsResolverInterface $resolver) {}
+    protected function setDefaultConnections() {}
+
+    protected function initialize() {}
 }

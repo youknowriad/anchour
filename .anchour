@@ -1,13 +1,15 @@
-commands:
+anchour:
+    commands:
 
-    phar:
-        description: "Build anchour phar"
+        phar:
+            description: "Build anchour phar"
 
-        steps:
-            -
-                type: "phar"
-                options:
-                    directory: "."
-                    regexp: "`^bin/.*|src/.*|vendor/(?!mageekguy).*|anchour\.php`"
-                    stub: "anchour.php"
-                    name: "anchour.phar"
+            steps:
+                -
+                    type: "cliPhar"
+                    options:
+                        directory: "."
+                        regexp: "^[^\.].*/bin/.*|src/.*|vendor/(?!mageekguy).*|anchour\.php"
+                        stub: "src/Rizeway/Anchour/Phar/stub.php"
+                        name: "anchour.phar"
+                        chmod: true

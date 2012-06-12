@@ -2,9 +2,11 @@
 
 namespace Rizeway\Anchour\Step\Steps;
 
-use Rizeway\Anchour\Step\Step;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+
+use Rizeway\Anchour\Step\Step;
+use Rizeway\Anchour\Step\Definition\Definition;
+
 use OOSSH\SSH2\Connection;
 use OOSSH\SSH2\Authentication\Password;
 
@@ -12,40 +14,33 @@ use jubianchi\Adapter\AdapterInterface;
 
 class StepSsh extends Step
 {
-    public function __construct(array $options = array(), $connections = array(), 
-        OptionsResolverInterface $options_resolver = null, OptionsResolverInterface $connections_resolver = null, AdapterInterface $adapter = null)
+    public function initialize()
     {
-        $this->setAdapter($adapter);
-
         if(false === $this->getAdapter()->extension_loaded('ssh2'))
         {
             throw new \RuntimeException('SSH2 extension is not loaded');
         }
-
-        parent::__construct($options, $connections, $options_resolver, $connections_resolver, $adapter);
     }
 
-    protected function setDefaultOptions(OptionsResolverInterface $resolver)
+    protected function setDefaultOptions()
     {
-        $resolver->setRequired(array(
-            'commands'
-        ));
+        $this->addOption('commands', Definition::TYPE_REQUIRED);
     }
     
-    protected function setDefaultConnections(OptionsResolverInterface $resolver)
+    protected function setDefaultConnections()
     {
-        $resolver->setRequired(array(
-            'connection'
-        ));
+        $this->addConnection('connection', Definition::TYPE_REQUIRED);
     }
 
     public function run(OutputInterface $output)
     {
-        $this->getConnection()->connect($output);
+        error_reporting(($level = error_reporting()) ^ E_WARNING);
 
-        foreach ($this->options['commands'] as $command)
+        $this->getConnection('connection')->connect($output);
+
+        foreach ($this->getOption('commands') as $command)
         {
-            $this->getConnection()->exec($command, function($stdio, $stderr) use($output) {
+            $this->getConnection('connection')->exec($command, function($stdio, $stderr) use($output) {
               $output->write($stdio);
 
               if('' !== $stderr)
@@ -54,12 +49,7 @@ class StepSsh extends Step
               }
             });
         }
-    }
 
-    /**
-     * @return string
-     */
-    protected function getConnection() {
-        return  $this->connections['connection'];
+        error_reporting($level);
     }
 }

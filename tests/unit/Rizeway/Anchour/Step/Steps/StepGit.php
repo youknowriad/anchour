@@ -21,15 +21,12 @@ class StepGit extends test
                             'commands' => array()
                         ),
                         array('connection' => uniqid()),
-                        new \mock\Symfony\Component\OptionsResolver\OptionsResolver(),
-                        new \mock\Symfony\Component\OptionsResolver\OptionsResolver()
+                        $adapter
                     )
                 )
                 ->isInstanceOf('\\Rizeway\\Anchour\\Step\\Step')
                 ->exception(function() {
-                    new \Rizeway\Anchour\Step\Steps\StepGit(array(), array(),
-                        new \mock\Symfony\Component\OptionsResolver\OptionsResolver(),
-                        new \mock\Symfony\Component\OptionsResolver\OptionsResolver());
+                    new \Rizeway\Anchour\Step\Steps\StepGit(array(), array());
                 })
                 ->isInstanceOf('\\Symfony\\Component\\OptionsResolver\\Exception\\MissingOptionsException')
                 ->hasMessage('The required options "remote_dir", "repository" are missing.')
@@ -46,8 +43,6 @@ class StepGit extends test
                             'commands' => array()
                         ),
                         array('connection' => uniqid()),
-                        new \mock\Symfony\Component\OptionsResolver\OptionsResolver(),
-                        new \mock\Symfony\Component\OptionsResolver\OptionsResolver(),
                         $adapter
                     );
                 })

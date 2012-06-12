@@ -29,7 +29,7 @@ class Application extends BaseApplication implements AdaptableInterface
     {
         $this->setAdapter($adapter);
 
-        parent::__construct('Anchour');
+        parent::__construct('Anchour', ANCHOUR_VERSION);
 
         $this->setCatchExceptions(true);
 
@@ -38,16 +38,21 @@ class Application extends BaseApplication implements AdaptableInterface
 
     public function doRun(InputInterface $input, OutputInterface $output)
     {
+        $exc = null;
         try
         {
             $this->initialize($this->initializer);
         }
         catch(\Exception $exc)
         {
-            if('init' !== $input->getFirstArgument())
+            if(null !== $input->getFirstArgument() && 'init' !== $input->getFirstArgument())
             {
-                $this->renderException($exc, $output);
+                throw $exc;
             }
+        }
+
+        if(null !== $exc) {
+            $this->renderException($exc, $output);
         }
 
         $this->add(new InitCommand());

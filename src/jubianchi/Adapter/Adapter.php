@@ -13,4 +13,8 @@ class Adapter implements AdapterInterface {
     public function __call($name, $args) {
         return $this->invoke($name, $args);
     }
+
+    public function exec($command, &$output = null, &$status = null) {
+        return exec($command, $output, $status);
+    }
 }

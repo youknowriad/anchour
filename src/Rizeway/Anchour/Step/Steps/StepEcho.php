@@ -1,23 +1,20 @@
 <?php
-
 namespace Rizeway\Anchour\Step\Steps;
 
-use Rizeway\Anchour\Step\Step;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+
+use Rizeway\Anchour\Step\Step;
+use Rizeway\Anchour\Step\Definition\Definition;
 
 class StepEcho extends Step
 {
-    protected function setDefaultOptions(OptionsResolverInterface $resolver)
+    protected function setDefaultOptions()
     {
-        $resolver->setRequired(array(
-            'message'
-        ));
+        $this->addOption('message', Definition::TYPE_REQUIRED);
     }
 
     public function run(OutputInterface $output)
     {
-        $output->writeln($this->options['message']);
+        $output->writeln($this->getOption('message'));
     }
 }

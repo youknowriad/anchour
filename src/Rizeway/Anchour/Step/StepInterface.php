@@ -4,9 +4,10 @@ namespace Rizeway\Anchour\Step;
 
 use Symfony\Component\Console\Output\OutputInterface;
 
-interface StepInterface
-{
+use jubianchi\Adapter\AdaptableInterface;
 
+interface StepInterface extends AdaptableInterface
+{
     /**
      * Run the step
      */

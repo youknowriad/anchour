@@ -15,8 +15,6 @@ class StepFtp extends test
                     new \Rizeway\Anchour\Step\Steps\StepFtp(
                         array(),
                         array(),
-                        new \mock\Symfony\Component\OptionsResolver\OptionsResolver(),
-                        new \mock\Symfony\Component\OptionsResolver\OptionsResolver(),
                         $adapter
                     );
                 })
@@ -28,9 +26,7 @@ class StepFtp extends test
                 ->exception(function() {
                     new \Rizeway\Anchour\Step\Steps\StepFtp(
                         array(),
-                        array(),
-                        new \mock\Symfony\Component\OptionsResolver\OptionsResolver(),
-                        new \mock\Symfony\Component\OptionsResolver\OptionsResolver()
+                        array()
                     );
                 })
                 ->isInstanceOf('\\Symfony\\Component\\OptionsResolver\\Exception\\MissingOptionsException')
@@ -42,8 +38,6 @@ class StepFtp extends test
                             'remote_dir' => uniqid()
                         ),
                         array('connection' => uniqid()),
-                        new \Symfony\Component\OptionsResolver\OptionsResolver(),
-                        new \Symfony\Component\OptionsResolver\OptionsResolver(),
                         $adapter
                     )
                 )

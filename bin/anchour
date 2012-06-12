@@ -1,3 +1,8 @@
 #!/usr/bin/env php
 <?php
+if(!defined('ANCHOUR_VERSION'))
+{
+    define('ANCHOUR_VERSION', '0.1-source');
+}
+
 include dirname(__DIR__) . DIRECTORY_SEPARATOR . 'anchour.php';

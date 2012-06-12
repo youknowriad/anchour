@@ -7,31 +7,32 @@ class StepRsync extends test
 {
     public function test__construct()
     {
-        $this                        
-            ->object(
-                new \Rizeway\Anchour\Step\Steps\StepRsync(
-                    array(
-                        'key_file' => uniqid(),
-                        'source_dir' => uniqid(),
-                        'destination_dir' => uniqid(),
-                        'cli_args' => uniqid(),
-                    ),
-                    array(
-                        'source' => uniqid(), 
-                        'destination' => uniqid(),
-                    ),
-                    new \mock\Symfony\Component\OptionsResolver\OptionsResolver(), 
-                    new \mock\Symfony\Component\OptionsResolver\OptionsResolver()
+        $this   
+            ->if($adapter = new \jubianchi\Adapter\Test\Adapter())
+            ->and($adapter->setExecStatus(0))               
+            ->then()                     
+                ->object(
+                    new \Rizeway\Anchour\Step\Steps\StepRsync(
+                        array(
+                            'key_file' => uniqid(),
+                            'source_dir' => uniqid(),
+                            'destination_dir' => uniqid(),
+                            'cli_args' => uniqid(),
+                        ),
+                        array(
+                            'source' => uniqid(), 
+                            'destination' => uniqid(),
+                        ),
+                        $adapter
+                    )
                 )
-            )
-            ->isInstanceOf('\\Rizeway\\Anchour\\Step\\Step')            
-            ->exception(function() {
-                new \Rizeway\Anchour\Step\Steps\StepRsync(array(), array(),
-                    new \mock\Symfony\Component\OptionsResolver\OptionsResolver(),
-                    new \mock\Symfony\Component\OptionsResolver\OptionsResolver());
-            })
-            ->isInstanceOf('\\Symfony\\Component\\OptionsResolver\\Exception\\MissingOptionsException')
-            ->hasMessage('The required option "key_file" is  missing.')
+                ->isInstanceOf('\\Rizeway\\Anchour\\Step\\Step')            
+            
+                ->exception(function() {
+                    new \Rizeway\Anchour\Step\Steps\StepRsync(array(), array());
+                })
+                ->isInstanceOf('\\Symfony\\Component\\OptionsResolver\\Exception\\MissingOptionsException')
+                ->hasMessage('The required option "key_file" is  missing.')
         ;
     }
 
@@ -41,6 +42,7 @@ class StepRsync extends test
             ->if($connections = new \mock\Rizeway\Anchour\Connection\ConnectionHolder())
             ->and($resolver = new \mock\Symfony\Component\OptionsResolver\OptionsResolver())
             ->and($adapter = new \jubianchi\Adapter\Test\Adapter())
+            ->and($adapter->setExecStatus(0)) 
             ->and(
                 $connection = new \mock\Rizeway\Anchour\Connection\Connections\ConnectionSsh(
                     $resolver,
@@ -55,8 +57,6 @@ class StepRsync extends test
             ->and($file = uniqid())                        
             ->and($output = new \mock\Symfony\Component\Console\Output\OutputInterface())            
             ->and($message = uniqid())
-            ->and($resolver = new \mock\Symfony\Component\OptionsResolver\OptionsResolver())
-            ->and($resolver_connections = new \mock\Symfony\Component\OptionsResolver\OptionsResolver())
             ->and(
                 $object = new \Rizeway\Anchour\Step\Steps\StepRsync(
                     array(
@@ -67,8 +67,7 @@ class StepRsync extends test
                     array(
                         'destination' => $connection
                     ),
-                    $resolver, 
-                    $resolver_connections
+                    $adapter
                 )
             )
             ->and($object->setAdapter($adapter))
@@ -79,9 +78,7 @@ class StepRsync extends test
                     ->withArguments(sprintf('rsync -avz --progress -e "ssh -i %s" %s %s@%s:%s 2>&1', $key, $source, $username, $host, $dest))->once()
 
 
-            ->if($resolver = new \mock\Symfony\Component\OptionsResolver\OptionsResolver())
-            ->and($resolver_connections = new \mock\Symfony\Component\OptionsResolver\OptionsResolver())
-            ->and(
+            ->if(
                 $object = new \Rizeway\Anchour\Step\Steps\StepRsync(
                     array(
                         'key_file' => ($key = uniqid()), 
@@ -90,9 +87,7 @@ class StepRsync extends test
                     ), 
                     array(
                         'source' => $connection
-                    ),
-                    $resolver, 
-                    $resolver_connections
+                    )
                 )
             )
             ->and($object->setAdapter($adapter))

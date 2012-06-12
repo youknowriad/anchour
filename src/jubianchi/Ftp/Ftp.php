@@ -1,8 +1,7 @@
 <?php
 namespace jubianchi\Ftp;
 
-use Symfony\Component\Console\Output\OutputInterface;
-
+use jubianchi\Output\OutputInterface;
 use jubianchi\Adapter\Adaptable;
 use jubianchi\Adapter\AdapterInterface;
 
@@ -13,9 +12,8 @@ class Ftp extends Adaptable
      */
     private $connection;
 
-
     /**
-     * @var \Symfony\Component\Console\Output\OutputInterface
+     * @var \jubianchi\Output\OutputInterface
      */
     private $output;
 
@@ -43,10 +41,14 @@ class Ftp extends Adaptable
      * @param int    $timeout
      *
      * @throws \RuntimeException
+     *
+     * @return bool
      */
     public function connect($host, $login, $password, $port = 21, $timeout = 90) 
     {
-        if (false === $this->getAdapter()->is_resource($this->connection = $this->getAdapter()->ftp_connect($host, $port, $timeout)))
+        $this->connection = $this->getAdapter()->ftp_connect($host, $port, $timeout);
+
+        if (false === $this->getAdapter()->is_resource($this->connection))
         {
             throw new \RuntimeException('FTP connection has failed');
         }
@@ -100,6 +102,11 @@ class Ftp extends Adaptable
         return true;
     }
 
+    /**
+     * @param string $directory
+     *
+     * @return bool
+     */
     public function directoryExists($directory) 
     {
         $cwd = $this->getAdapter()->ftp_pwd($this->getConnection());
@@ -196,7 +203,7 @@ class Ftp extends Adaptable
     }
 
     /**
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param \jubianchi\Output\OutputInterface $output
      */
     public function setOutput(OutputInterface $output)
     {
@@ -204,7 +211,7 @@ class Ftp extends Adaptable
     }
 
     /**
-     * @return \Symfony\Component\Console\Output\OutputInterface
+     * @return \jubianchi\Output\OutputInterface
      */
     public function getOutput()
     {
