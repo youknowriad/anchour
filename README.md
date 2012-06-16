@@ -6,7 +6,7 @@ Anchour is a deployment engine for web applications
 Installation
 ============
 
-    wget http://anchour.rizeway.com/anchour.phar
+    wget http://rizeway.com/anchour.phar
 
 Usage
 =====
@@ -16,35 +16,36 @@ This Files defines scripts that are a collection of steps
 
 Example
 -------    
-    connections:
-        MySSH:
-            type: "ssh"
-            options:
-                host: "localhost"
-                username: "foo"
-                password: "bar"
+    anchour:
+        connections:
+            MySSH:
+                type: "ssh"
+                options:
+                    host: "localhost"
+                    username: "foo"
+                    password: "bar"
 
-    commands:
-        deploy:
-            steps:
-                -
-                    type: "echo"
-                    options:
-                        message: "A test message <comment>with</comment> <info>formatted</info> <error>output</error>"
+        commands:
+            deploy:
+                steps:
+                    -
+                        type: "echo"
+                        options:
+                            message: "A test message <comment>with</comment> <info>formatted</info> <error>output</error>"
 
-                -
-                    type: "rsync"
-                    options:
-                        key_file: "/home/username/.ssh/id_rsa_rsync"
-                        source_dir: "tmp/minitwitter"
-                        destination_dir: "tmp/minitwitter2"
-                    connections:
-                        connection: MySSH
+                    -
+                        type: "rsync"
+                        options:
+                            key_file: "/home/username/.ssh/id_rsa_rsync"
+                            source_dir: "tmp/minitwitter"
+                            destination_dir: "tmp/minitwitter2"
+                        connections:
+                            connection: MySSH
 
 
 Now deploy your project by running
 
-    php anchour.phar deploy
+    ./anchour.phar deploy
 
 
 Connections
@@ -208,3 +209,11 @@ You may want to commit your .anchour file without some informations like passwor
 
 
 When you run the command deploy (described above), anchour will detect all the required variables for your command, asks you their values, and use them in the right places (example: %my_username% will be replaced by the value of the variable my_username)
+
+Contribute
+==========
+Install the dependancies using phar and your ready to go
+
+    git clone https://github.com/youknowriad/anchour.git && cd anchour
+    curl -s http://getcomposer.org/installer | php
+    ./composer.phar install

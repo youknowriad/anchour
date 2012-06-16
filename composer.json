@@ -3,7 +3,7 @@
     "type": "script",
     "description": "Toolkit for deploying web applications",
     "keywords": ["web", "deploy", "php"],
-    "license": "GPL",
+    "license": "MIT",
     "authors": [
         {
             "name": "Riad Benguella",
