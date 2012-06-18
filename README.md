@@ -12,7 +12,7 @@ Usage
 =====
 
 First, Add a configuration file named `.anchour` to your project.
-This Files defines scripts that are a collection of steps
+This file defines some commands composed by an ordered set of steps
 
 Example
 -------    
@@ -212,7 +212,7 @@ When you run the command deploy (described above), anchour will detect all the r
 
 Contribute
 ==========
-Install the dependancies using phar and your ready to go
+Install the dependancies using composer and your ready to go
 
     git clone https://github.com/youknowriad/anchour.git && cd anchour
     curl -s http://getcomposer.org/installer | php
