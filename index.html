@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Anchour : A deployment engine for web applications" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Anchour</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/youknowriad/anchour">View on GitHub</a>
+
+          <h1 id="project_title">Anchour</h1>
+          <h2 id="project_tagline">A deployment engine for web applications</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/youknowriad/anchour/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/youknowriad/anchour/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>Anchour</h1>
+
+<p>Anchour is a deployment engine for web applications</p>
+
+<h1>Installation</h1>
+
+<pre><code>wget http://rizeway.com/anchour.phar
+</code></pre>
+
+<h1>Usage</h1>
+
+<p>First, Add a configuration file named <code>.anchour</code> to your project.
+This file defines some commands composed by an ordered set of steps</p>
+
+<h2>Example</h2>
+
+<pre><code>anchour:
+    connections:
+        MySSH:
+            type: "ssh"
+            options:
+                host: "localhost"
+                username: "foo"
+                password: "bar"
+
+    commands:
+        deploy:
+            steps:
+                -
+                    type: "echo"
+                    options:
+                        message: "A test message &lt;comment&gt;with&lt;/comment&gt; &lt;info&gt;formatted&lt;/info&gt; &lt;error&gt;output&lt;/error&gt;"
+
+                -
+                    type: "rsync"
+                    options:
+                        key_file: "/home/username/.ssh/id_rsa_rsync"
+                        source_dir: "tmp/minitwitter"
+                        destination_dir: "tmp/minitwitter2"
+                    connections:
+                        connection: MySSH
+</code></pre>
+
+<p>Now deploy your project by running</p>
+
+<pre><code>./anchour.phar deploy
+</code></pre>
+
+<h1>Connections</h1>
+
+<p>The connection types allowed by Anchour are</p>
+
+<h2>SSH with login and password</h2>
+
+<pre><code>MySSH:
+    type: "ssh"
+    options:
+        host: "localhost"
+        username: "foo"
+        password: "bar"
+</code></pre>
+
+<h2>FTP</h2>
+
+<pre><code>MyFTP:
+    type: "ftp"
+    options:
+        host: "host.fr"
+        username: "foo"
+        password: "bar"
+</code></pre>
+
+<h2>MySQL</h2>
+
+<pre><code>MySql1:
+    type: "mysql"
+    options:
+        host: "host.fr"
+        username: "foo"
+        password: "bar"
+        database: "db1"
+</code></pre>
+
+<h1>Steps</h1>
+
+<p>The step types allowed by Anchour are</p>
+
+<h2>Echo</h2>
+
+<p>This step type allows you to output a formatted message</p>
+
+<h3>Usage</h3>
+
+<pre><code>type: "echo"
+options:
+    message: "A test message &lt;comment&gt;with&lt;/comment&gt; &lt;info&gt;formatted&lt;/info&gt; &lt;error&gt;output&lt;/error&gt;"
+</code></pre>
+
+<h2>Rsync</h2>
+
+<p>This step type allows you to synchronize a local folder in a distant server using a SSH connection</p>
+
+<h3>Usage</h3>
+
+<pre><code>type: "rsync"
+options:
+    key_file: "/home/username/.ssh/id_rsa_rsync"
+    source_dir: "tmp/minitwitter"
+    destination_dir: "tmp/minitwitter2"
+connections:
+    destination: "MySSH"
+</code></pre>
+
+<h2>Ftp</h2>
+
+<p>This step type allows you to upload a local folder using a FTP connection</p>
+
+<h3>Usage</h3>
+
+<pre><code>type: "ftp"
+options:
+    local_dir: "src"
+    remote_dir: "test"
+connections:
+    connection: "MyFTP"
+</code></pre>
+
+<h2>Ssh</h2>
+
+<p>This step type allows you to execute commands in a remote server using SSH</p>
+
+<h3>Usage</h3>
+
+<pre><code>type: "ssh"
+options:
+    commands:
+        - uname -a
+        - date
+connections:
+    connection: "MySSH"
+</code></pre>
+
+<h2>Git</h2>
+
+<p>This allows you to clone a GIT repository in a remote server using a SSH connection</p>
+
+<h3>Usage</h3>
+
+<pre><code>type: "git"
+options:
+    repository: "git://github.com/jubianchi/minitwitter.git"
+    remote_dir: "tmp/minitwitter"
+    clean_scm: true
+    remove_existing: true
+connections:
+    connection: "MySSH"
+</code></pre>
+
+<h2>MySql</h2>
+
+<p>This step allows you to maka a Mysql Export/Import using two MySql Connections</p>
+
+<h3>Usage</h3>
+
+<pre><code>type: "mysql"
+options:
+    create_database: true
+    drop_database: true
+connections:
+    source: "MySQL1"
+    destination: "MySQL2"
+</code></pre>
+
+<h2>CliPhar</h2>
+
+<p>This step allows you to build a CLI Phar archive</p>
+
+<h3>Usage</h3>
+
+<pre><code>type: "cliPhar"
+options:
+    directory: "."
+    regexp: "^[^\.].*/a/.*|regexp/.*|used/(?!to).*|filter\.php"
+    stub: "path/to/phar/stub.php"
+    name: "name.phar"
+    chmod: true
+</code></pre>
+
+<h1>Variables</h1>
+
+<p>You may want to commit your .anchour file without some informations like passwords and hosts ... To do that, Anchour allows you to define some required variables in your connections like this</p>
+
+<pre><code>connections:
+    MyFTP:
+        type: ftp
+        options:
+            host: %my_host%
+            username: %my_username%
+            password: %my_password%
+
+commands:
+    deploy:
+        description: Deploy using FTP
+
+
+        steps:
+            -
+                type: ftp
+                options:
+                    remote_dir: %folder%
+                connections:
+                    connection: MyFTP
+</code></pre>
+
+<p>When you run the command deploy (described above), anchour will detect all the required variables for your command, asks you their values, and use them in the right places (example: %my_username% will be replaced by the value of the variable my_username)</p>
+
+<h1>Contribute</h1>
+
+<p>Install the dependancies using composer and your ready to go</p>
+
+<pre><code>git clone https://github.com/youknowriad/anchour.git &amp;&amp; cd anchour
+curl -s http://getcomposer.org/installer | php
+./composer.phar install
+</code></pre>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Anchour maintained by <a href="https://github.com/youknowriad">youknowriad</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-788479-15");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+
+  </body>
+</html>
