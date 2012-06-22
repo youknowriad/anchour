@@ -1,6 +1,8 @@
 Anchour
 =======
 
+[![Build Status](https://secure.travis-ci.org/youknowriad/anchour.png?branch=master)](http://travis-ci.org/youknowriad/anchour)
+
 Anchour is a deployment engine for web applications
 
 Installation
