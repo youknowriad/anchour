@@ -25,8 +25,8 @@ class StepGit extends test
                     )
                 )
                 ->isInstanceOf('\\Rizeway\\Anchour\\Step\\Step')
-                ->exception(function() {
-                    new \Rizeway\Anchour\Step\Steps\StepGit(array(), array());
+                ->exception(function() use($adapter) {
+                    new \Rizeway\Anchour\Step\Steps\StepGit(array(), array(), $adapter);
                 })
                 ->isInstanceOf('\\Symfony\\Component\\OptionsResolver\\Exception\\MissingOptionsException')
                 ->hasMessage('The required options "remote_dir", "repository" are missing.')

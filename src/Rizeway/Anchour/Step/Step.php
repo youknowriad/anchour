@@ -13,7 +13,7 @@ abstract class Step implements StepInterface
      * The step options
      * @var mixed[]
      */
-    private $options;
+    protected $options;
     
     /**
      * The connections used by the step
