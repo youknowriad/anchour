@@ -1,2 +1,2 @@
 #!/bin/sh
-vendor/bin/atoum -d tests/unit/ -bf tests/bootstrap.php -nccfns Symfony --loop $*
+vendor/bin/atoum -d tests/unit/ -bf tests/bootstrap.php -nccfns Symfony $*
