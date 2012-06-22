@@ -22,7 +22,7 @@ class StepCliPhar extends Step
 
     public function run(OutputInterface $output)
     {
-        $path = realpath(rtrim($this->getOption('output'), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $this->getOption('name'));
+        $path = rtrim($this->getOption('output'), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $this->getOption('name');
 
         if($this->getAdapter()->file_exists($path)) {
             $this->getAdapter()->unlink($path);
