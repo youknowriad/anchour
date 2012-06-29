@@ -12,20 +12,11 @@ use Rizeway\Anchour\Config\Loader;
 
 class Initializer
 {
-    public function initialize(Application $console, Loader $loader)
+    public function initialize(Application $application, Loader $loader)
     {
-        foreach ($loader->getCommands() as $command_name => $description)
+        foreach ($loader->getCommands() as $command)
         {
-            $console->add($this->getInstance($command_name, $description, $loader));
+            $application->add($command);
         }
-    }
-
-    public function getInstance($name, $description, Loader $loader)
-    {
-        $command = new \Rizeway\Anchour\Console\Command\TargetCommand($name);
-        $command->setDescription($description);
-        $command->setLoader($loader);
-
-        return $command;
     }
 }

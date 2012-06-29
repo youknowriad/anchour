@@ -10,16 +10,11 @@ class Initializer extends test
         $this
             ->if($object = new \mock\Rizeway\Anchour\Console\Initializer())
             ->and($application = new \mock\Rizeway\Anchour\Console\Application($object))
-            ->and($loader = new \mock\Rizeway\Anchour\Config\Loader($application, ''))
+            ->and($loader = new \mock\Rizeway\Anchour\Config\Loader(uniqid()))
             ->and($loader->getMockController()->getCommands = array(
-                'foo' => uniqid(),
-                'bar' => uniqid()
+                'foo' => ($fooCommand = new \mock\Symfony\Component\Console\Command\Command('foo')),
+                'bar' => ($barCommand = new \mock\Symfony\Component\Console\Command\Command('bar'))
             ))
-            ->and($fooCommand = new \mock\Symfony\Component\Console\Command\Command('foo'))
-            ->and($barCommand = new \mock\Symfony\Component\Console\Command\Command('bar'))
-            ->and($object->getMockController()->getInstance = function($name) use($fooCommand, $barCommand) {
-                return ${$name . 'Command'};
-            })
             ->then()
                 ->variable($object->initialize($application, $loader))->isNull()
                 ->mock($loader)
@@ -27,21 +22,6 @@ class Initializer extends test
                 ->mock($application)
                     ->call('add')->withArguments($fooCommand)->once()
                     ->call('add')->withArguments($barCommand)->once()
-        ;
-    }
-
-    public function testGetInstance()
-    {
-        $this
-            ->if($object = new \mock\Rizeway\Anchour\Console\Initializer())
-            ->and($application = new \mock\Rizeway\Anchour\Console\Application($object))
-            ->and($loader = new \mock\Rizeway\Anchour\Config\Loader($application, ''))
-            ->and($name = uniqid())
-            ->and($description = uniqid())
-            ->then()
-                ->object($command = $object->getInstance($name, $description, $loader))->isInstanceOf('\\Rizeway\\Anchour\\Console\\Command\\TargetCommand')
-                ->string($command->getName())->isEqualTo($name)
-                ->string($command->getDescription())->isEqualTo($description)
         ;
     }
 }

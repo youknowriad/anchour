@@ -1,13 +1,19 @@
 <?php
 namespace Rizeway\Anchour\Step;
 
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputInterface;
+
 use Rizeway\Anchour\Step\Definition\Definition;
 use Rizeway\Anchour\Step\Definition\DefinitionInterface;
+use Rizeway\Anchour\Config\ResolverInterface;
+use Rizeway\Anchour\Config\Resolvers;
+use Rizeway\Anchour\Config\ConfigurableInterface;
 
 use jubianchi\Adapter\AdapterInterface;
 use jubianchi\Adapter\Adapter;
 
-abstract class Step implements StepInterface
+abstract class Step implements StepInterface, ConfigurableInterface
 {
     /**
      * The step options
@@ -22,7 +28,7 @@ abstract class Step implements StepInterface
     private $connections;
 
     /**
-     * @var \Rizeway\Anchour\Step\Definition\Definition
+     * @var \Rizeway\Anchour\Step\Definition\DefinitionInterface
      */
     private $definition;
 
@@ -30,6 +36,11 @@ abstract class Step implements StepInterface
      * @var \jubianchi\Adapter\AdapterInterface
      */
     private $adapter;
+
+    /**
+     * @var array
+     */
+    private $config = array();
 
     final public function __construct(array $options = array(), array $connections = array(), AdapterInterface $adapter = null, DefinitionInterface $definition = null)
     {
@@ -133,4 +144,32 @@ abstract class Step implements StepInterface
     protected function setDefaultConnections() {}
 
     protected function initialize() {}
+
+    public function resolveConfiguration(ResolverInterface $resolver) {
+        $this->setConfig($resolver->resolve($this));
+
+        foreach($this->connections as $connection) {
+            $connection->resolveConfiguration($resolver);
+        }
+    }
+
+    /**
+     * @param array $config
+     *
+     * @return \Rizeway\Anchour\Step\Step
+     */
+    public function setConfig(array $config)
+    {
+        $this->options = $config;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getConfig()
+    {
+        return $this->options;
+    }
 }

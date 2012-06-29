@@ -3,6 +3,7 @@
 namespace Rizeway\Anchour\Step\Steps;
 
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputInterface;
 
 use Rizeway\Anchour\Step\Step;
 use Rizeway\Anchour\Step\Definition\Definition;
@@ -20,7 +21,7 @@ class StepCliPhar extends Step
         $this->addOption('chmod', Definition::TYPE_OPTIONAL, false);
     }
 
-    public function run(OutputInterface $output)
+    public function run(InputInterface $input, OutputInterface $output)
     {
         $path = rtrim($this->getOption('output'), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $this->getOption('name');
 

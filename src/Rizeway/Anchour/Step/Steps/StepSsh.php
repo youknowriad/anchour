@@ -3,6 +3,7 @@
 namespace Rizeway\Anchour\Step\Steps;
 
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputInterface;
 
 use Rizeway\Anchour\Step\Step;
 use Rizeway\Anchour\Step\Definition\Definition;
@@ -20,6 +21,8 @@ class StepSsh extends Step
         {
             throw new \RuntimeException('SSH2 extension is not loaded');
         }
+
+        parent::initialize();
     }
 
     protected function setDefaultOptions()
@@ -32,7 +35,18 @@ class StepSsh extends Step
         $this->addConnection('connection', Definition::TYPE_REQUIRED);
     }
 
-    public function run(OutputInterface $output)
+    protected function exec($command, OutputInterface $output) {
+        $this->getConnection('connection')->exec($command, function($stdio, $stderr) use($output) {
+            $output->write($stdio);
+
+            if('' !== $stderr)
+            {
+                throw new \RuntimeException($stderr);
+            }
+        });
+    }
+
+    public function run(InputInterface $input, OutputInterface $output)
     {
         error_reporting(($level = error_reporting()) ^ E_WARNING);
 
@@ -40,14 +54,7 @@ class StepSsh extends Step
 
         foreach ($this->getOption('commands') as $command)
         {
-            $this->getConnection('connection')->exec($command, function($stdio, $stderr) use($output) {
-              $output->write($stdio);
-
-              if('' !== $stderr)
-              {
-                throw new \RuntimeException($stderr);
-              }
-            });
+            $this->exec($command, $output);
         }
 
         error_reporting($level);

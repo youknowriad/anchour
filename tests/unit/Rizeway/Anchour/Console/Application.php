@@ -20,7 +20,7 @@ class Application extends test
             ->if($adapter->file_exists = false)
             ->and($object->getMockController()->renderException = function() {})
             ->then()
-                ->integer($object->doRun($input, $output))->isEqualTo(0)
+                ->integer($object->doRun($input, $output))->isEqualTo(255)
                 ->mock($object)
                     ->call('renderException')->once()
         ;

@@ -6,6 +6,13 @@ anchour:
 
             steps:
                 -
+                    type: "cli"
+                    options:
+                        commands:
+                            - wget http://getcomposer.org/composer.phar
+                            - php composer.phar update
+                            - rm composer.phar
+                -
                     type: "cliPhar"
                     options:
                         directory: "."

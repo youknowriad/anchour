@@ -3,6 +3,7 @@
 namespace Rizeway\Anchour\Step;
 
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputInterface;
 
 class StepRunner
 {
@@ -24,10 +25,10 @@ class StepRunner
     /**
      * @param \Symfony\Component\Console\Output\OutputInterface $output
      */
-    public function run(OutputInterface $output)
+    public function run(InputInterface $input, OutputInterface $output)
     {
         foreach ($this->steps as $step) {
-            $step->run($output);
+            $step->run($input, $output);
         }
     }
 }

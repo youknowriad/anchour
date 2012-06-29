@@ -1,10 +1,11 @@
 <?php
 namespace Rizeway\Anchour\Step\Steps;
 
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputInterface;
+
 use Rizeway\Anchour\Step\Step;
 use Rizeway\Anchour\Step\Definition\Definition;
-
-use Symfony\Component\Console\Output\OutputInterface;
 
 class StepRsync extends Step
 {
@@ -34,7 +35,7 @@ class StepRsync extends Step
         $this->addConnection('destination', Definition::TYPE_OPTIONAL);
     }
 
-    public function run(OutputInterface $output)
+    public function run(InputInterface $input, OutputInterface $output)
     {
         if(true === $this->hasConnection('source')) {
             $source = sprintf(

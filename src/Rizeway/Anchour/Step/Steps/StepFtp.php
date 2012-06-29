@@ -3,6 +3,7 @@
 namespace Rizeway\Anchour\Step\Steps;
 
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputInterface;
 
 use Rizeway\Anchour\Step\Step;
 
@@ -32,7 +33,7 @@ class StepFtp extends Step
         $this->addConnection('connection', Definition::TYPE_REQUIRED);
     }
 
-    public function run(OutputInterface $output)
+    public function run(InputInterface $input, OutputInterface $output)
     {
         error_reporting(($level = error_reporting()) ^ E_WARNING);
 

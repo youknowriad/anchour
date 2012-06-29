@@ -1,5 +1,4 @@
 <?php
-
 namespace Rizeway\Anchour\Console;
 
 use Symfony\Component\Console\Application as BaseApplication;
@@ -18,6 +17,9 @@ use jubianchi\Adapter\Adapter;
 
 class Application extends BaseApplication implements AdaptableInterface
 {
+    /**
+     * @var \Rizeway\Anchour\Console\Initializer
+     */
     protected $initializer;
 
     /**
@@ -31,6 +33,7 @@ class Application extends BaseApplication implements AdaptableInterface
 
         parent::__construct('Anchour', ANCHOUR_VERSION);
 
+        $this->getDefinition()->addOption(new InputOption('config', 'c', InputOption::VALUE_REQUIRED, 'Configuration file'));
         $this->setCatchExceptions(true);
 
         $this->initializer = $initializer;
@@ -53,9 +56,9 @@ class Application extends BaseApplication implements AdaptableInterface
 
         if(null !== $exc) {
             $this->renderException($exc, $output);
-        }
 
-        $this->add(new InitCommand());
+            return 255;
+        }
 
         return parent::doRun($input, $output);
     }
@@ -91,9 +94,11 @@ class Application extends BaseApplication implements AdaptableInterface
             throw new \Exception('The .anchour config files was not found in the current directory');
         }
 
-        $loader = new Loader($this, $anchour_config_file);
+        $loader = new Loader($anchour_config_file);
 
         // Initializing the commands
+        $this->add(new InitCommand());
+
         $this->initializer->initialize($this, $loader);
 
         return $this;

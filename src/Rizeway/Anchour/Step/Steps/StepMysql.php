@@ -5,6 +5,7 @@ use Rizeway\Anchour\Step\Step;
 use Rizeway\Anchour\Step\Definition\Definition;
 
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputInterface;
 
 use jubianchi\Adapter\AdapterInterface;
 
@@ -33,7 +34,7 @@ class StepMysql extends Step
         $this->addConnection('destination', Definition::TYPE_REQUIRED);
     }
 
-    public function run(OutputInterface $output)
+    public function run(InputInterface $input, OutputInterface $output)
     {
         $file = $this->getAdapter()->tempnam(sys_get_temp_dir(), uniqid());
 
