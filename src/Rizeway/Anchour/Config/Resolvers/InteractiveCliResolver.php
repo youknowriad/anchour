@@ -32,7 +32,15 @@ class InteractiveCliResolver extends Resolver {
         $values = array();
 
         foreach ($this->getVariablesToAskInArray($command->getConfig()) as $key => $var) {
-            $values[$var] = $this->dialog->ask($this->output, sprintf('Entrer the <info>%s (%s)</info> : ', $key, $var));
+            $question = sprintf('Entrer the <info>%s (%s)</info> : ', $key, $var);
+
+            if(preg_match('/password|pwd|passwd?/', $key) > 0) {
+                $this->output->write($question);
+                $values[$var] = exec('stty -echo; read PASSWORD; stty echo; echo $PASSWORD');
+                $this->output->writeln('');
+            } else {
+                $values[$var] = $this->dialog->ask($this->output, $question);
+            }
         }
 
         return $this->replaceValuesInRecursiveArray($command->getConfig(), $values);
