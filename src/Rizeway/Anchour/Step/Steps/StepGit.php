@@ -7,8 +7,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Rizeway\Anchour\Step\Step;
 use Rizeway\Anchour\Step\Definition\Definition;
 
-use jubianchi\Adapter\AdapterInterface;
-
 class StepGit extends StepSsh
 {
     protected function setDefaultOptions()
@@ -25,15 +23,13 @@ class StepGit extends StepSsh
 
     public function run(InputInterface $input, OutputInterface $output)
     {
-        if (true === $this->getOption('remove_existing'))
-        {
+        if (true === $this->getOption('remove_existing')) {
             $this->exec(sprintf('rm -rf %s', $this->getOption('remote_dir')), $output);
         }
 
         $this->exec(sprintf('git clone %s %s', $this->getOption('repository'), $this->getOption('remote_dir')), $output);
 
-        if (true === $this->getOption('clean_scm'))
-        {
+        if (true === $this->getOption('clean_scm')) {
             $this->exec(sprintf('rm -rf %s/.git', $this->getOption('remote_dir')), $output);
         }
     }

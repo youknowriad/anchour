@@ -3,10 +3,8 @@ namespace Rizeway\Anchour\Console;
 
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\ConsoleOutput;
 
 use Rizeway\Anchour\Config\Loader;
 use Rizeway\Anchour\Console\Command\InitCommand;
@@ -42,19 +40,15 @@ class Application extends BaseApplication implements AdaptableInterface
     public function doRun(InputInterface $input, OutputInterface $output)
     {
         $exc = null;
-        try
-        {
+        try {
             $this->initialize($this->initializer);
-        }
-        catch(\Exception $exc)
-        {
-            if(null !== $input->getFirstArgument() && 'init' !== $input->getFirstArgument())
-            {
+        } catch (\Exception $exc) {
+            if (null !== $input->getFirstArgument() && 'init' !== $input->getFirstArgument()) {
                 throw $exc;
             }
         }
 
-        if(null !== $exc) {
+        if (null !== $exc) {
             $this->renderException($exc, $output);
 
             return 255;
@@ -78,7 +72,7 @@ class Application extends BaseApplication implements AdaptableInterface
      */
     public function getAdapter()
     {
-      if(true === is_null($this->adapter)) {
+      if (true === is_null($this->adapter)) {
         $this->adapter = new Adapter();
       }
 
@@ -89,8 +83,7 @@ class Application extends BaseApplication implements AdaptableInterface
     {
         // Checking the anchour config file
         $anchour_config_file = getcwd().'/.anchour';
-        if (false === $this->getAdapter()->file_exists($anchour_config_file))
-        {
+        if (false === $this->getAdapter()->file_exists($anchour_config_file)) {
             throw new \Exception('The .anchour config files was not found in the current directory');
         }
 

@@ -12,14 +12,14 @@ abstract class Connection implements ConnectionInterface, ConfigurableInterface
     protected $options;
 
     public function __construct(OptionsResolverInterface $resolver, array $options = array())
-    {        
+    {
         $this->setDefaultOptions($resolver);
         $this->setConfig($resolver->resolve($options));
     }
 
     /**
-     * Define The Step options 
-     * @param OptionsResolverInterface $resolver 
+     * Define The Step options
+     * @param OptionsResolverInterface $resolver
      */
     abstract protected function setDefaultOptions(OptionsResolverInterface $resolver);
 
@@ -30,7 +30,8 @@ abstract class Connection implements ConnectionInterface, ConfigurableInterface
      */
     abstract public function __toString();
 
-    public function resolveConfiguration(ResolverInterface $resolver) {
+    public function resolveConfiguration(ResolverInterface $resolver)
+    {
         $this->setConfig($resolver->resolve($this));
     }
 

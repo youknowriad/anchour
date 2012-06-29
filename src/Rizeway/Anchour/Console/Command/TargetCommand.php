@@ -1,7 +1,6 @@
 <?php
 namespace Rizeway\Anchour\Console\Command;
 
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -40,7 +39,7 @@ class TargetCommand extends Command implements ConfigurableInterface
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->resolver = new Resolvers\InteractiveCliResolver($output, $this->getApplication()->getHelperSet()->get('dialog'));
-        if(($config = $input->getOption('config')) !== null) {
+        if (($config = $input->getOption('config')) !== null) {
             $this->resolver = new Resolvers\ConfigurationFileResolver($config);
         }
 
@@ -50,8 +49,9 @@ class TargetCommand extends Command implements ConfigurableInterface
         $runner->run($input, $output);
     }
 
-    public function resolveConfiguration(ResolverInterface $resolver) {
-        foreach($this->getSteps() as $step) {
+    public function resolveConfiguration(ResolverInterface $resolver)
+    {
+        foreach ($this->getSteps() as $step) {
             $step->resolveConfiguration($resolver);
         }
     }

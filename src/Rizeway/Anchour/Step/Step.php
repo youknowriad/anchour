@@ -1,13 +1,9 @@
 <?php
 namespace Rizeway\Anchour\Step;
 
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputInterface;
-
 use Rizeway\Anchour\Step\Definition\Definition;
 use Rizeway\Anchour\Step\Definition\DefinitionInterface;
 use Rizeway\Anchour\Config\ResolverInterface;
-use Rizeway\Anchour\Config\Resolvers;
 use Rizeway\Anchour\Config\ConfigurableInterface;
 
 use jubianchi\Adapter\AdapterInterface;
@@ -20,7 +16,7 @@ abstract class Step implements StepInterface, ConfigurableInterface
      * @var mixed[]
      */
     protected $options;
-    
+
     /**
      * The connections used by the step
      * @var \Rizeway\Anchour\Connection\ConnectionInterface[]
@@ -71,43 +67,45 @@ abstract class Step implements StepInterface, ConfigurableInterface
      */
     public function getAdapter()
     {
-        if(true === is_null($this->adapter)) {
+        if (true === is_null($this->adapter)) {
             $this->adapter = new Adapter();
         }
 
         return $this->adapter;
     }
 
-    public function addOption($name, $type, $default = null) 
+    public function addOption($name, $type, $default = null)
     {
         $this->getDefinition()->addOption($name, $type, $default);
     }
 
-    public function hasOption($name) 
+    public function hasOption($name)
     {
         return isset($this->options[$name]);
     }
 
-    public function getOption($name) {
-        if(false === $this->hasOption($name)) {
+    public function getOption($name)
+    {
+        if (false === $this->hasOption($name)) {
             throw new \InvalidArgumentException(sprintf('Option %s is not defined', $name));
         }
 
         return $this->options[$name];
     }
 
-    public function addConnection($name, $type, $default = null) 
+    public function addConnection($name, $type, $default = null)
     {
         $this->getDefinition()->addConnection($name, $type, $default);
     }
 
-    public function hasConnection($name) 
+    public function hasConnection($name)
     {
         return isset($this->connections[$name]);
     }
 
-    public function getConnection($name) {
-        if(false === $this->hasConnection($name)) {
+    public function getConnection($name)
+    {
+        if (false === $this->hasConnection($name)) {
             throw new \InvalidArgumentException(sprintf('Connection %s is not defined', $name));
         }
 
@@ -119,7 +117,7 @@ abstract class Step implements StepInterface, ConfigurableInterface
      */
     private function getDefinition()
     {
-        if(null === $this->definition) {
+        if (null === $this->definition) {
             $this->definition = new Definition();
         }
 
@@ -134,7 +132,7 @@ abstract class Step implements StepInterface, ConfigurableInterface
     }
 
     /**
-     * Define The Step options 
+     * Define The Step options
      */
     abstract protected function setDefaultOptions();
 
@@ -145,10 +143,11 @@ abstract class Step implements StepInterface, ConfigurableInterface
 
     protected function initialize() {}
 
-    public function resolveConfiguration(ResolverInterface $resolver) {
+    public function resolveConfiguration(ResolverInterface $resolver)
+    {
         $this->setConfig($resolver->resolve($this));
 
-        foreach($this->connections as $connection) {
+        foreach ($this->connections as $connection) {
             $connection->resolveConfiguration($resolver);
         }
     }

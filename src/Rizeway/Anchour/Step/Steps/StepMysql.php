@@ -7,17 +7,14 @@ use Rizeway\Anchour\Step\Definition\Definition;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputInterface;
 
-use jubianchi\Adapter\AdapterInterface;
-
 class StepMysql extends Step
 {
     public function initialize()
-    {        
+    {
         $output = $status = null;
         $this->getAdapter()->exec('which mysql && which mysqldump', $output, $status);
 
-        if(0 !== $status)
-        {
+        if (0 !== $status) {
             throw new \RuntimeException('mysql and/or mysqldump command are not available');
         }
     }
@@ -41,8 +38,7 @@ class StepMysql extends Step
         $source = $this->getConnection('source');
         $destination = $this->getConnection('destination');
 
-        if(true === $this->getOption('drop_database'))
-        {
+        if (true === $this->getOption('drop_database')) {
             $cmd = sprintf(
                 'mysql -h%s -u%s%s -e "DROP DATABASE \`%s\`"',
                 $destination->getHost(),
@@ -55,8 +51,7 @@ class StepMysql extends Step
             $this->getAdapter()->passthru($cmd);
         }
 
-        if(true === $this->getOption('create_database'))
-        {
+        if (true === $this->getOption('create_database')) {
             $cmd = sprintf(
                 'mysql -h%s -u%s%s -e "CREATE DATABASE IF NOT EXISTS \`%s\`"',
                 $destination->getHost(),

@@ -24,14 +24,13 @@ class Ftp extends Adaptable
      * @param int    $port
      * @param int    $timeout
      */
-    public function __construct(AdapterInterface $adapter = null) 
+    public function __construct(AdapterInterface $adapter = null)
     {
         $this->setAdapter($adapter);
 
-        if(false === $this->getAdapter()->extension_loaded('ftp'))
-        {
+        if (false === $this->getAdapter()->extension_loaded('ftp')) {
             throw new \RuntimeException('FTP extension is not loaded');
-        }        
+        }
     }
 
     /**
@@ -44,21 +43,17 @@ class Ftp extends Adaptable
      *
      * @return bool
      */
-    public function connect($host, $login, $password, $port = 21, $timeout = 90) 
+    public function connect($host, $login, $password, $port = 21, $timeout = 90)
     {
         $this->connection = $this->getAdapter()->ftp_connect($host, $port, $timeout);
 
-        if (false === $this->getAdapter()->is_resource($this->connection))
-        {
+        if (false === $this->getAdapter()->is_resource($this->connection)) {
             throw new \RuntimeException('FTP connection has failed');
         }
 
-        try 
-        {
+        try {
             $this->login($login, $password);
-        }        
-        catch (\RuntimeException $exc) 
-        {
+        } catch (\RuntimeException $exc) {
             $this->connection = null;
 
             throw $exc;
@@ -75,10 +70,9 @@ class Ftp extends Adaptable
      *
      * @return bool
      */
-    public function login($login, $password) 
+    public function login($login, $password)
     {
-        if (false === $this->getAdapter()->ftp_login($this->getConnection(), $login, $password)) 
-        {
+        if (false === $this->getAdapter()->ftp_login($this->getConnection(), $login, $password)) {
             throw new \RuntimeException('Could not login with the given crednetials');
         }
 
@@ -90,14 +84,13 @@ class Ftp extends Adaptable
      *
      * @return bool
      */
-    public function createDirectory($directory) 
+    public function createDirectory($directory)
     {
-        if (false === $this->directoryExists($directory))
-        {
-            if(false === $this->getAdapter()->ftp_mkdir($this->getConnection(), $directory)) {
+        if (false === $this->directoryExists($directory)) {
+            if (false === $this->getAdapter()->ftp_mkdir($this->getConnection(), $directory)) {
                 throw new \RuntimeException(sprintf('Could not create the %s directory', $directory));
             }
-        }        
+        }
 
         return true;
     }
@@ -107,11 +100,11 @@ class Ftp extends Adaptable
      *
      * @return bool
      */
-    public function directoryExists($directory) 
+    public function directoryExists($directory)
     {
         $cwd = $this->getAdapter()->ftp_pwd($this->getConnection());
-        $exists = $this->getAdapter()->ftp_chdir($this->getConnection(), $directory);            
-        $this->getAdapter()->ftp_chdir($this->getConnection(), $cwd);   
+        $exists = $this->getAdapter()->ftp_chdir($this->getConnection(), $directory);
+        $this->getAdapter()->ftp_chdir($this->getConnection(), $cwd);
 
         return $exists;
     }
@@ -121,13 +114,12 @@ class Ftp extends Adaptable
      *
      * @return bool
      */
-    public function createDirectoryRecursive($directory) 
+    public function createDirectoryRecursive($directory)
     {
         $parts = explode(DIRECTORY_SEPARATOR, trim($directory, '/'));
 
-        $path = '';    
-        foreach ($parts as $dirname) 
-        {
+        $path = '';
+        foreach ($parts as $dirname) {
             $path .= DIRECTORY_SEPARATOR . $dirname;
 
             $this->createDirectory($path);
@@ -144,12 +136,11 @@ class Ftp extends Adaptable
      *
      * @return bool
      */
-    public function uploadFile($local, $distant) 
+    public function uploadFile($local, $distant)
     {
         $this->log('Uploading file <info>' . $local . '</info> to <info>' . $distant . '</info>');
 
-        if (false === $this->getAdapter()->ftp_put($this->getConnection(), $distant, $local, FTP_BINARY))
-        {            
+        if (false === $this->getAdapter()->ftp_put($this->getConnection(), $distant, $local, FTP_BINARY)) {
             throw new \RuntimeException(sprintf('Could not send the %s local file to %s', $local, $distant));
         }
 
@@ -164,7 +155,7 @@ class Ftp extends Adaptable
      *
      * @return bool
      */
-    public function uploadDirectory($local, $distant) 
+    public function uploadDirectory($local, $distant)
     {
         $this->log('Uploading directory <info>' . $local . '</info> to <info>' . $distant . '</info>');
 
@@ -172,10 +163,8 @@ class Ftp extends Adaptable
 
         $iterator = new \DirectoryIterator($local);
         foreach ($iterator as $entry) {
-            if (false === in_array($entry->getBasename(), array('.', '..'))) 
-            {
-                switch (true) 
-                {
+            if (false === in_array($entry->getBasename(), array('.', '..'))) {
+                switch (true) {
                     case $entry->isDir():
                         $this->uploadDirectory($entry->getRealPath(), $distant . DIRECTORY_SEPARATOR . $entry->getBasename());
                         break;
@@ -188,7 +177,7 @@ class Ftp extends Adaptable
                         //The entry is a link
                         break;
                 }
-            }            
+            }
         }
 
         return true;
@@ -197,7 +186,7 @@ class Ftp extends Adaptable
     /**
      * @return resource
      */
-    public function getConnection() 
+    public function getConnection()
     {
         return $this->connection;
     }
@@ -223,8 +212,7 @@ class Ftp extends Adaptable
      */
     public function log($message)
     {
-        if (false === is_null($this->getOutput()))
-        {
+        if (false === is_null($this->getOutput())) {
             $this->getOutput()->writeln($message);
         }
     }

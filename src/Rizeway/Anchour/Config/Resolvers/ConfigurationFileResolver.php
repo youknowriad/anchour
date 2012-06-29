@@ -6,7 +6,8 @@ use Symfony\Component\Yaml\Yaml;
 use Rizeway\Anchour\Config\ConfigurableInterface;
 use Rizeway\Anchour\Config\Resolver;
 
-class ConfigurationFileResolver extends Resolver {
+class ConfigurationFileResolver extends Resolver
+{
     /**
      * @var array
      */
@@ -15,13 +16,14 @@ class ConfigurationFileResolver extends Resolver {
     /**
      * @param string $filename
      */
-    public function __construct($filename) {
-        if(false == file_exists($filename)) {
+    public function __construct($filename)
+    {
+        if (false == file_exists($filename)) {
             throw new \RuntimeException(sprintf('File %s does not exist', $filename));
         }
 
         $info = pathinfo($filename);
-        switch($info['extension']) {
+        switch ($info['extension']) {
             case 'yml':
                 $this->config = Yaml::parse($filename);
                 break;

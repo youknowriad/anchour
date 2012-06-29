@@ -14,8 +14,7 @@ class StepRsync extends Step
         $output = $status = null;
         $this->getAdapter()->exec('which rsync', $output, $status);
 
-        if(0 !== $status)
-        {
+        if (0 !== $status) {
             throw new \RuntimeException('rsync command is not available');
         }
     }
@@ -37,7 +36,7 @@ class StepRsync extends Step
 
     public function run(InputInterface $input, OutputInterface $output)
     {
-        if(true === $this->hasConnection('source')) {
+        if (true === $this->hasConnection('source')) {
             $source = sprintf(
                 '%s@%s:%s',
                 $this->getConnection('source')->getUsername(),
@@ -70,8 +69,7 @@ class StepRsync extends Step
           $status
         );
 
-        if (0 !== $status)
-        {
+        if (0 !== $status) {
           throw new \RuntimeException(implode(PHP_EOL, $output));
         }
     }

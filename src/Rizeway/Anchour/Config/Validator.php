@@ -1,8 +1,9 @@
 <?php
 namespace Rizeway\Anchour\Config;
 
-class Validator {
-    public function validate(array $config = array()) 
+class Validator
+{
+    public function validate(array $config = array())
     {
         $builder = new \Symfony\Component\Config\Definition\Builder\TreeBuilder();
         $root = $builder->root('anchour');
@@ -15,7 +16,7 @@ class Validator {
                         ->children()
                             ->scalarNode('type')->cannotBeEmpty()->end()
                             ->arrayNode('options')
-                                ->prototype('variable')->end() 
+                                ->prototype('variable')->end()
                             ->end()
                         ->end()
                     ->end()
@@ -28,10 +29,10 @@ class Validator {
                             ->arrayNode('steps')
                                 ->requiresAtLeastOneElement()
                                 ->prototype('array')
-                                    ->children()                                    
+                                    ->children()
                                         ->scalarNode('type')->cannotBeEmpty()->end()
-                                        ->arrayNode('options')  
-                                            ->prototype('variable')->end()                                           
+                                        ->arrayNode('options')
+                                            ->prototype('variable')->end()
                                         ->end()
                                         ->arrayNode('connections')
                                             ->prototype('scalar')->cannotBeEmpty()->end()
@@ -46,6 +47,6 @@ class Validator {
         ;
 
         $processor = new \Symfony\Component\Config\Definition\Processor();
-        $processor->process($builder->buildTree(), (array)$config);
+        $processor->process($builder->buildTree(), (array) $config);
     }
 }

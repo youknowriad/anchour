@@ -8,8 +8,8 @@ abstract class Resolver implements ResolverInterface
     /**
      * Replace all %option% in the $array with their values in $values
      *
-     * @param  mixed[]  $array
-     * @param  string[] $values
+     * @param mixed[]  $array
+     * @param string[] $values
      *
      * @return mixed[]
      */
@@ -21,12 +21,12 @@ abstract class Resolver implements ResolverInterface
                 $result[$key] = $this->replaceValuesInRecursiveArray($value, $values);
             } else {
                 $result[$key] = $value;
-                
+
                 $result[$key] = preg_replace_callback(
-                    static::VARIABLE_REGEXP, 
+                    static::VARIABLE_REGEXP,
                     function($matches) use($values) {
                         return $values[$matches[0]];
-                    }, 
+                    },
                     $value
                 );
             }
@@ -38,7 +38,7 @@ abstract class Resolver implements ResolverInterface
     /**
      * Get The variables to ask %var% from a recursive array
      *
-     * @param  mixed[] $array
+     * @param mixed[] $array
      *
      * @return string[]
      */

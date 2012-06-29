@@ -9,16 +9,12 @@ use Rizeway\Anchour\Step\Step;
 use Rizeway\Anchour\Step\Definition\Definition;
 
 use OOSSH\SSH2\Connection;
-use OOSSH\SSH2\Authentication\Password;
-
-use jubianchi\Adapter\AdapterInterface;
 
 class StepSsh extends Step
 {
     public function initialize()
     {
-        if(false === $this->getAdapter()->extension_loaded('ssh2'))
-        {
+        if (false === $this->getAdapter()->extension_loaded('ssh2')) {
             throw new \RuntimeException('SSH2 extension is not loaded');
         }
 
@@ -29,18 +25,18 @@ class StepSsh extends Step
     {
         $this->addOption('commands', Definition::TYPE_REQUIRED);
     }
-    
+
     protected function setDefaultConnections()
     {
         $this->addConnection('connection', Definition::TYPE_REQUIRED);
     }
 
-    protected function exec($command, OutputInterface $output) {
+    protected function exec($command, OutputInterface $output)
+    {
         $this->getConnection('connection')->exec($command, function($stdio, $stderr) use($output) {
             $output->write($stdio);
 
-            if('' !== $stderr)
-            {
+            if ('' !== $stderr) {
                 throw new \RuntimeException($stderr);
             }
         });
@@ -52,8 +48,7 @@ class StepSsh extends Step
 
         $this->getConnection('connection')->connect($output);
 
-        foreach ($this->getOption('commands') as $command)
-        {
+        foreach ($this->getOption('commands') as $command) {
             $this->exec($command, $output);
         }
 

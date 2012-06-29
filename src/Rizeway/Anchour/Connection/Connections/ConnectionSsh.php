@@ -32,9 +32,8 @@ class ConnectionSsh extends Connection
 
     public function connect(OutputInterface $output)
     {
-        if (false === $this->isConnected())
-        {
-            $output->writeln(sprintf('Opening <info>SSH</info> connection to <info>%s</info> <comment>(%s)</comment>', $this->options['host'], (string)$this));
+        if (false === $this->isConnected()) {
+            $output->writeln(sprintf('Opening <info>SSH</info> connection to <info>%s</info> <comment>(%s)</comment>', $this->options['host'], (string) $this));
 
             $this->connection = new SshConnection($this->options['host'], $this->options['port']);
             $this->connection
