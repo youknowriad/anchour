@@ -9,15 +9,17 @@ use
     mageekguy\atoum\test\adapter as AtoumAdapter
 ;
 
-class Adapter extends AtoumAdapter implements BaseAdapter 
+class Adapter extends AtoumAdapter implements BaseAdapter
 {
     private $execStatus = null;
 
-    public function setExecStatus($status) {
+    public function setExecStatus($status)
+    {
         $this->execStatus = $status;
     }
 
-    public function exec($command, &$output = null, &$status = null) {
+    public function exec($command, &$output = null, &$status = null)
+    {
         $this->addCall('exec', func_get_args());
 
         $status = $this->execStatus;

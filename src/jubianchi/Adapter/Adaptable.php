@@ -3,7 +3,8 @@ namespace jubianchi\Adapter;
 
 use jubianchi\Adapter\AdaptableInterface;
 
-class Adaptable implements AdaptableInterface {
+class Adaptable implements AdaptableInterface
+{
     /**
      * @var \jubianchi\Adapter\AdapterInterface
      */
@@ -24,7 +25,7 @@ class Adaptable implements AdaptableInterface {
      */
     public function getAdapter()
     {
-        if(true === is_null($this->adapter)) {
+        if (true === is_null($this->adapter)) {
             $this->adapter = new Adapter();
         }
 

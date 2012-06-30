@@ -1,5 +1,5 @@
 <?php
-namespace jubianchi\Output;
+namespace jubianchi\Output\Symfony;
 
 use Symfony\Component\Console\Output\ConsoleOutput;
 

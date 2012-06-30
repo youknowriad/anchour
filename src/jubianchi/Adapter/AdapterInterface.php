@@ -1,6 +1,7 @@
 <?php
 namespace jubianchi\Adapter;
 
-interface AdapterInterface {
-	function invoke($name, array $args = array());	
+interface AdapterInterface
+{
+    public function invoke($name, array $args = array());
 }

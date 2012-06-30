@@ -8,21 +8,19 @@ class StepFactory extends Adaptable
 {
     /**
      * Build a step from a conf array
-     * 
-     * @param  mixed[] $config The Conf array
+     *
+     * @param mixed[] $config The Conf array
      * @param Rizeway\Anchour\Connection\ConnectionInterface[]
      * @return Rizeway\Anchour\Step\Step
      */
     public function build($config, $connections)
     {
-        if (!isset($config['type']))
-        {
+        if (!isset($config['type'])) {
             throw new \RuntimeException('The step type is required');
         }
 
         $class = 'Rizeway\Anchour\Step\Steps\Step'.ucfirst($config['type']);
-        if (!$this->getAdapter()->class_exists($class))
-        {
+        if (!$this->getAdapter()->class_exists($class)) {
             throw new \RuntimeException(sprintf('The step %s was not found', $config['type']));
         }
 
@@ -36,7 +34,7 @@ class StepFactory extends Adaptable
         return $this->getInstance($class, $options, $connection_objects);
     }
 
-    public function getInstance($class, $options, $connections) 
+    public function getInstance($class, $options, $connections)
     {
         return new $class($options, $connections);
     }

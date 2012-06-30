@@ -1,10 +1,11 @@
 <?php
 namespace Rizeway\Anchour\Step\Steps;
 
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputInterface;
+
 use Rizeway\Anchour\Step\Step;
 use Rizeway\Anchour\Step\Definition\Definition;
-
-use Symfony\Component\Console\Output\OutputInterface;
 
 class StepRsync extends Step
 {
@@ -13,8 +14,7 @@ class StepRsync extends Step
         $output = $status = null;
         $this->getAdapter()->exec('which rsync', $output, $status);
 
-        if(0 !== $status)
-        {
+        if (0 !== $status) {
             throw new \RuntimeException('rsync command is not available');
         }
     }
@@ -34,9 +34,9 @@ class StepRsync extends Step
         $this->addConnection('destination', Definition::TYPE_OPTIONAL);
     }
 
-    public function run(OutputInterface $output)
+    public function run(InputInterface $input, OutputInterface $output)
     {
-        if(true === $this->hasConnection('source')) {
+        if (true === $this->hasConnection('source')) {
             $source = sprintf(
                 '%s@%s:%s',
                 $this->getConnection('source')->getUsername(),
@@ -69,8 +69,7 @@ class StepRsync extends Step
           $status
         );
 
-        if (0 !== $status)
-        {
+        if (0 !== $status) {
           throw new \RuntimeException(implode(PHP_EOL, $output));
         }
     }
