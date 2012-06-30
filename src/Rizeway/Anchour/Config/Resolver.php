@@ -1,7 +1,9 @@
 <?php
 namespace Rizeway\Anchour\Config;
 
-abstract class Resolver implements ResolverInterface
+use jubianchi\Adapter\Adaptable;
+
+abstract class Resolver extends Adaptable implements ResolverInterface
 {
     const VARIABLE_REGEXP = '/%([a-zA-Z]+[a-zA-Z0-9_]*)%/';
 
@@ -13,7 +15,7 @@ abstract class Resolver implements ResolverInterface
      *
      * @return mixed[]
      */
-    protected function replaceValuesInRecursiveArray($array, $values)
+    public function replaceValuesInRecursiveArray($array, $values)
     {
         $result = array();
         foreach ($array as $key => $value) {
@@ -42,11 +44,11 @@ abstract class Resolver implements ResolverInterface
      *
      * @return string[]
      */
-    protected function getVariablesToAskInArray($array, $path = null)
+    public function getVariablesToAskInArray($array)
     {
         $variables = array();
         foreach ($array as $key => $value) {
-            $key = trim($path . '.' . $key, '.');
+            $key = trim($key);
 
             if (is_array($value)) {
                 $variables += $this->getVariablesToAskInArray($value, $key);

@@ -3,6 +3,8 @@ namespace Rizeway\Anchour\Config\Resolvers;
 
 use Symfony\Component\Yaml\Yaml;
 
+use jubianchi\Adapter\AdapterInterface;
+
 use Rizeway\Anchour\Config\ConfigurableInterface;
 use Rizeway\Anchour\Config\Resolver;
 
@@ -16,33 +18,32 @@ class ConfigurationFileResolver extends Resolver
     /**
      * @param string $filename
      */
-    public function __construct($filename)
+    public function __construct(\SplFileInfo $file, AdapterInterface $adapter = null)
     {
-        if (false == file_exists($filename)) {
-            throw new \RuntimeException(sprintf('File %s does not exist', $filename));
+        $this->setAdapter($adapter);
+
+        if (false === $file->isFile()) {
+            throw new \RuntimeException(sprintf('File %s does not exist', $file->getRealPath()));
         }
 
-        $info = pathinfo($filename);
-        switch ($info['extension']) {
+        switch ($file->getExtension()) {
             case 'yml':
-                $this->config = Yaml::parse($filename);
+                $this->config = Yaml::parse($file->getRealPath());
                 break;
             case 'ini':
-                $this->config = parse_ini_file($filename);
+                $this->config = $this->getAdapter()->parse_ini_file($file->getRealPath());
                 break;
             case 'json':
-                $this->config = json_decode(file_get_contents($filename), true);
+                $this->config = json_decode($this->getAdapter()->file_get_contents($file->getRealPath()), true);
                 break;
         }
     }
 
     /**
-     * Get Required Parameters From File
-     *
-     * @param Command $command
+     * @param Command $configurable
      */
-    public function resolve(ConfigurableInterface $command)
+    public function resolve(ConfigurableInterface $configurable)
     {
-        return $this->replaceValuesInRecursiveArray($command->getConfig(), $this->config);
+        return $this->replaceValuesInRecursiveArray($configurable->getConfig(), $this->config);
     }
 }

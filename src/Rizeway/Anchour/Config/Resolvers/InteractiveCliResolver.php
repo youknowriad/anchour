@@ -4,6 +4,8 @@ namespace Rizeway\Anchour\Config\Resolvers;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Helper\DialogHelper;
 
+use jubianchi\Adapter\AdapterInterface;
+
 use Rizeway\Anchour\Config\ConfigurableInterface;
 use Rizeway\Anchour\Config\Resolver;
 
@@ -18,8 +20,10 @@ class InteractiveCliResolver extends Resolver
      * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @param \Symfony\Component\Console\Helper\DialogHelper    $dialog
      */
-    public function __construct(OutputInterface $output, DialogHelper $dialog)
+    public function __construct(OutputInterface $output, DialogHelper $dialog, AdapterInterface $adapter = null)
     {
+        $this->setAdapter($adapter);
+
         $this->output = $output;
         $this->dialog = $dialog;
     }
@@ -38,7 +42,7 @@ class InteractiveCliResolver extends Resolver
 
             if (preg_match('/password|pwd|passwd?/', $key) > 0) {
                 $this->output->write($question);
-                $values[$var] = exec('stty -echo; read PASSWORD; stty echo; echo $PASSWORD');
+                $values[$var] = $this->getAdapter()->exec('stty -echo; read PASSWORD; stty echo; echo $PASSWORD');
                 $this->output->writeln('');
             } else {
                 $values[$var] = $this->dialog->ask($this->output, $question);
