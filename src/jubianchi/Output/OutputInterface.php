@@ -1,6 +1,7 @@
 <?php
 namespace jubianchi\Output;
 
-interface OutputInterface {
-    function writeln($message);
+interface OutputInterface
+{
+    public function writeln($message);
 }

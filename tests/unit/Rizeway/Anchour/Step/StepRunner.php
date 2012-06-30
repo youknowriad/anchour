@@ -13,11 +13,12 @@ class StepRunner extends test
                 $otherStep = new \mock\Rizeway\Step\Step()
             ))
             ->and($output = new \mock\Symfony\Component\Console\Output\OutputInterface())
+            ->and($input = new \mock\Symfony\Component\Console\Input\InputInterface())
             ->and($object = new \Rizeway\Anchour\Step\StepRunner($steps))
             ->then()
-                ->variable($object->run($output))->isNull()
-                ->mock($step)->call('run')->withArguments($output)->once()
-                ->mock($otherStep)->call('run')->withArguments($output)->once()
+                ->variable($object->run($input, $output))->isNull()
+                ->mock($step)->call('run')->withArguments($input, $output)->once()
+                ->mock($otherStep)->call('run')->withArguments($input, $output)->once()
         ;
     }
 }

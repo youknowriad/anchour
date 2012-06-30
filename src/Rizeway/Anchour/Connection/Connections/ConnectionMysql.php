@@ -13,7 +13,7 @@ class ConnectionMysql extends Connection
     {
         $resolver->setRequired(array(
             'host',
-            'username',            
+            'username',
             'database'
         ));
 

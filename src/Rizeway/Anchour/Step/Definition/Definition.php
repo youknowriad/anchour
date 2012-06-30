@@ -1,7 +1,6 @@
 <?php
 namespace Rizeway\Anchour\Step\Definition;
 
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class Definition implements DefinitionInterface
@@ -18,8 +17,8 @@ class Definition implements DefinitionInterface
     public function bindOptions(array $options)
     {
         $resolver = new OptionsResolver();
-        $resolver->setDefaults($this->options); 
-        $resolver->setRequired($this->requiredOptions); 
+        $resolver->setDefaults($this->options);
+        $resolver->setRequired($this->requiredOptions);
 
         return $resolver->resolve($options);
     }
@@ -27,34 +26,28 @@ class Definition implements DefinitionInterface
     public function bindConnections(array $connections)
     {
         $resolver = new OptionsResolver();
-        $resolver->setDefaults($this->connections); 
+        $resolver->setDefaults($this->connections);
         $resolver->setRequired(array_values($this->requiredConnections));
 
         return $resolver->resolve($connections);
     }
 
-    public function addConnection($connection, $type, $default = null) 
+    public function addConnection($connection, $type, $default = null)
     {
-        if(self::TYPE_REQUIRED === $type)
-        {
+        if (self::TYPE_REQUIRED === $type) {
             $this->requiredConnections[] = $connection;
-        } 
-        else 
-        {
+        } else {
             $this->connections[$connection] = $default;
         }
 
         return $this;
     }
 
-    public function addOption($option, $type, $default = null) 
+    public function addOption($option, $type, $default = null)
     {
-        if(self::TYPE_REQUIRED === $type)
-        {
+        if (self::TYPE_REQUIRED === $type) {
             $this->requiredOptions[] = $option;
-        } 
-        else 
-        {
+        } else {
             $this->options[$option] = $default;
         }
 

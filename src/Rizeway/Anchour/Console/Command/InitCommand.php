@@ -19,8 +19,7 @@ class InitCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (file_exists('.anchour') && !$input->getOption('force'))
-        {
+        if (file_exists('.anchour') && !$input->getOption('force')) {
             throw new \RuntimeException('File .anchour already exists. To replace it, use the --force/-f option');
         }
 
@@ -28,7 +27,8 @@ class InitCommand extends Command
         $file->fwrite($this->getTemplate());
     }
 
-    protected function getTemplate() {
+    protected function getTemplate()
+    {
         return <<<YAML
 anchour:
     # Here you can define your connections
@@ -45,7 +45,7 @@ anchour:
 
         # Default deploy command using rsync
         deploy:
-            description: "Deploy your project using rsync"        
+            description: "Deploy your project using rsync"
 
             # Here you can define your command steps
             steps:
@@ -78,7 +78,7 @@ anchour:
                             - rsync --progress -a --exclude '.anchour/' ./ .anchour/revisions/%revision_name%
                     connections:
                         connection: MySSH
-                        
+
 
         # Default rollback revision command
         rollback:

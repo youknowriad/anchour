@@ -55,7 +55,8 @@ class StepRsync extends test
             )
             ->and($adapter->exec = function() {})
             ->and($file = uniqid())                        
-            ->and($output = new \mock\Symfony\Component\Console\Output\OutputInterface())            
+            ->and($output = new \mock\Symfony\Component\Console\Output\OutputInterface())
+            ->and($input = new \mock\Symfony\Component\Console\Input\InputInterface())
             ->and($message = uniqid())
             ->and(
                 $object = new \Rizeway\Anchour\Step\Steps\StepRsync(
@@ -72,7 +73,7 @@ class StepRsync extends test
             )
             ->and($object->setAdapter($adapter))
             ->then()
-                ->variable($object->run($output))->isNull()                
+                ->variable($object->run($input, $output))->isNull()
                 ->adapter($adapter)
                 ->call('exec')
                     ->withArguments(sprintf('rsync -avz --progress -e "ssh -i %s" %s %s@%s:%s 2>&1', $key, $source, $username, $host, $dest))->once()
@@ -92,7 +93,7 @@ class StepRsync extends test
             )
             ->and($object->setAdapter($adapter))
             ->then()
-                ->variable($object->run($output))->isNull()                
+                ->variable($object->run($input, $output))->isNull()
                 ->adapter($adapter)
                 ->call('exec')
                     ->withArguments(sprintf('rsync -avz --progress -e "ssh -i %s" %s@%s:%s %s 2>&1', $key, $username, $host, $source, $dest))->once()                    

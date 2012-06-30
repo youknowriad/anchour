@@ -2,36 +2,41 @@
 namespace Rizeway\Anchour\Console\Command;
 
 use Symfony\Component\Console\Command\Command as BaseCommand;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
-use Rizeway\Anchour\Config\Loader;
 
 class Command extends BaseCommand
 {
     /**
-     * @var \Rizeway\Anchour\Config\Loader
-     */ 
-    private $loader;
+     * @var array
+     */
+    private $config = array();
 
     /**
-     * @return \Rizeway\Anchour\Config\Loader
-     */ 
-    public function getLoader() 
+     * @var \Rizeway\Anchour\Config\Resolver
+     */
+    private $resolver;
+
+    /**
+     * @param array $config
+     *
+     * @return \Rizeway\Anchour\Console\Command\Command
+     */
+    public function setConfig(array $config)
     {
-        return $this->loader;
+        $this->config = $config;
+
+        return $this;
     }
 
     /**
-     * @param \Rizeway\Anchour\Config\Loader $loader
-     *
-     * @return \Rizeway\Anchour\Console\Command\Command 
-     */ 
-    public function setLoader(Loader $loader) 
+     * @return array
+     */
+    public function getConfig()
     {
-        $this->loader = $loader;
+        return $this->config;
+    }
 
-        return $this;
+    protected function getResolver()
+    {
+        return $this->resolver;
     }
 }

@@ -32,7 +32,7 @@ class ConnectionFtp extends Connection
 
     public function connect(OutputInterface $output)
     {
-        if(false === $this->isConnected()) {
+        if (false === $this->isConnected()) {
             $output->writeln(sprintf('Opening <info>FTP</info> connection to <info>%s</info>', $this->options['host']));
 
             $this->connection = new Ftp();

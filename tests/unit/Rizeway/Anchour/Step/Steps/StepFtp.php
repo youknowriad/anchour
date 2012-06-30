@@ -23,10 +23,11 @@ class StepFtp extends test
 
             ->if($adapter->extension_loaded = true)
             ->then()
-                ->exception(function() {
+                ->exception(function() use($adapter) {
                     new \Rizeway\Anchour\Step\Steps\StepFtp(
                         array(),
-                        array()
+                        array(),
+                        $adapter
                     );
                 })
                 ->isInstanceOf('\\Symfony\\Component\\OptionsResolver\\Exception\\MissingOptionsException')
