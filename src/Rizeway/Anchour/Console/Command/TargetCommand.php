@@ -40,7 +40,7 @@ class TargetCommand extends Command implements ConfigurableInterface
     {
         $this->resolver = new Resolvers\InteractiveCliResolver($output, $this->getApplication()->getHelperSet()->get('dialog'));
         if (($config = $input->getOption('config')) !== null) {
-            $this->resolver = new Resolvers\ConfigurationFileResolver($config);
+            $this->resolver = new Resolvers\ConfigurationFileResolver(new \SplFileInfo($config));
         }
 
         $this->resolveConfiguration($this->resolver);
