@@ -23,8 +23,8 @@ class StepRsync extends Step
     {
         $this->addOption('key_file', Definition::TYPE_REQUIRED);
 
-        $this->addOption('source_dir', Definition::TYPE_OPTIONAL);
-        $this->addOption('destination_dir', Definition::TYPE_OPTIONAL);
+        $this->addOption('source_dir', Definition::TYPE_OPTIONAL, getcwd());
+        $this->addOption('destination_dir', Definition::TYPE_OPTIONAL, getcwd());
         $this->addOption('cli_args', Definition::TYPE_OPTIONAL, '-avz --progress');
     }
 
@@ -55,6 +55,9 @@ class StepRsync extends Step
                 $this->getOption('destination_dir')
             );
         }
+
+        $output->writeln('Source : <info>' . $source . '</info>');
+        $output->writeln('Destination : <info>' . $destination . '</info>');
 
         $status = 0;
         $this->getAdapter()->exec(
