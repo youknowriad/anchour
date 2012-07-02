@@ -59,7 +59,7 @@ anchour:
                     options:
                         key_file: %rsync_key_file%
                     connections:
-                        connection: MySSH
+                        destination: MySSH
 
                 -
                     type: "echo"
@@ -100,7 +100,7 @@ anchour:
                     type: "ssh"
                     options:
                         commands:
-                            - ls .anchour/revisions
+                            - find .anchour/revisions -maxdepth 1 -type d -printf "Revision <info>%f</info> <comment>(%a)</comment>\n" | tail -n1
                     connections:
                         connection: MySSH
 

@@ -47,16 +47,16 @@ abstract class Resolver extends Adaptable implements ResolverInterface
     public function getVariablesToAskInArray($array)
     {
         $variables = array();
-        foreach ($array as $key => $value) {
-            $key = trim($key);
-
+        foreach ($array as $value) {
             if (is_array($value)) {
-                $variables += $this->getVariablesToAskInArray($value, $key);
-            } elseif (preg_match(static::VARIABLE_REGEXP, $value, $matches)) {
-                $variables[$key] = $matches[0];
+                $variables += $this->getVariablesToAskInArray($value);
+            } elseif (preg_match_all(static::VARIABLE_REGEXP, $value, $matches)) {
+                foreach($matches[0] as $key => $match) {
+                    $variables[$matches[1][$key]] = $match;
+                }
             }
         }
 
-        return $variables;
+        return array_unique($variables);
     }
 }
