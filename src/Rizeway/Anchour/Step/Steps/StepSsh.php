@@ -33,6 +33,10 @@ class StepSsh extends Step
 
     protected function exec($command, OutputInterface $output)
     {
+        $output->setDecorated(false);
+        $output->writeln('Running command "' . $command . '"');
+        $output->setDecorated(true);
+
         $this->getConnection('connection')->exec($command, function($stdio, $stderr) use($output) {
             $output->write($stdio);
 
