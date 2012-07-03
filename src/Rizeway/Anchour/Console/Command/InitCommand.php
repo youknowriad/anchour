@@ -25,6 +25,8 @@ class InitCommand extends Command
 
         $file = new \SplFileObject('.anchour', 'w+');
         $file->fwrite($this->getTemplate());
+
+        $output->writeln('Default <info>.anchour</info> configuration file <info>successfully created</info>');
     }
 
     protected function getTemplate()
@@ -100,7 +102,7 @@ anchour:
                     type: "ssh"
                     options:
                         commands:
-                            - find .anchour/revisions -maxdepth 1 -type d -printf "Revision <info>%f</info> <comment>(%a)</comment>\n" | tail -n1
+                            - find .anchour/revisions -maxdepth 1 -type d -printf \"Revision <info>%f</info> <comment>(%a)</comment>\\n\" | tail -n1
                     connections:
                         connection: MySSH
 
