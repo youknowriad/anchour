@@ -31,6 +31,8 @@ abstract class Resolver extends Adaptable implements ResolverInterface
                     },
                     $value
                 );
+
+                $result[$key] = str_replace('\%', '%', $result[$key]);
             }
         }
 

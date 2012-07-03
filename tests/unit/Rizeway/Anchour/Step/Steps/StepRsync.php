@@ -71,6 +71,8 @@ class StepRsync extends test
                     $adapter
                 )
             )
+            ->and($adapter->function_exists = true)
+            ->and($adapter->posix_isatty = true)
             ->and($object->setAdapter($adapter))
             ->then()
                 ->variable($object->run($input, $output))->isNull()
@@ -96,8 +98,21 @@ class StepRsync extends test
                 ->variable($object->run($input, $output))->isNull()
                 ->adapter($adapter)
                 ->call('exec')
-                    ->withArguments(sprintf('rsync -avz --progress -e "ssh -i %s" %s@%s:%s %s 2>&1', $key, $username, $host, $source, $dest))->once()                    
+                    ->withArguments(sprintf('rsync -avz --progress -e "ssh -i %s" %s@%s:%s %s 2>&1', $key, $username, $host, $source, $dest))->once()
 
+            ->if($adapter->function_exists = false)
+            ->then()
+                ->variable($object->run($input, $output))->isNull()
+                ->adapter($adapter)
+                ->call('exec')
+                    ->withArguments(sprintf('rsync -avz --progress -e "ssh -i %s -o \"NumberOfPasswordPrompts 0\"" %s@%s:%s %s 2>&1', $key, $username, $host, $source, $dest))->once()
+
+            ->and($adapter->posix_isatty = false)
+            ->then()
+                ->variable($object->run($input, $output))->isNull()
+                ->adapter($adapter)
+                ->call('exec')
+                    ->withArguments(sprintf('rsync -avz --progress -e "ssh -i %s -o \"NumberOfPasswordPrompts 0\"" %s@%s:%s %s 2>&1', $key, $username, $host, $source, $dest))->exactly(2)
         ;   
     }
 }
