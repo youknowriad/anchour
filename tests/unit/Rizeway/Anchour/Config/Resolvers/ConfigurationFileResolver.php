@@ -15,22 +15,31 @@ class ConfigurationFileResolver extends test {
                 })
                 ->isInstanceOf('\\RuntimeException')
                 ->hasMessage(sprintf('File %s does not exist', $path))
+        ;
+    }
 
-            ->if($adapter = new \jubianchi\Adapter\Test\Adapter())
+    public function testGetValues() {
+        $this
+            ->if($file = new \mock\SplFileInfo(uniqid()))
             ->and($file->getMockController()->isFile = true)
+            ->and($file->getMockController()->getRealPath = $path = uniqid())
             ->and($file->getMockController()->getExtension = 'ini')
+            ->and($adapter = new \jubianchi\Adapter\Test\Adapter())
             ->and($adapter->parse_ini_file = function() {})
+            ->and($configurable = new \mock\Rizeway\Anchour\Config\ConfigurableInterface())
+            ->and($configurable->getMockController()->getConfig = array())
+            ->and($object = new \Rizeway\Anchour\Config\Resolvers\ConfigurationFileResolver($file, $adapter))
             ->then()
-                ->object(new \Rizeway\Anchour\Config\Resolvers\ConfigurationFileResolver($file, $adapter))
+                ->array($object->getValues($configurable))->isEmpty()
                 ->adapter($adapter)
-                    ->call('parse_ini_file')->withArguments($path)->once()
+                ->call('parse_ini_file')->withArguments($path)->once()
 
             ->if($file->getMockController()->getExtension = 'json')
             ->and($adapter->file_get_contents = function() {})
             ->then()
-                ->object(new \Rizeway\Anchour\Config\Resolvers\ConfigurationFileResolver($file, $adapter))
+                ->array($object->getValues($configurable))->isEmpty()
                 ->adapter($adapter)
-                    ->call('file_get_contents')->withArguments($path)->once()
+                ->call('file_get_contents')->withArguments($path)->once()
         ;
     }
 

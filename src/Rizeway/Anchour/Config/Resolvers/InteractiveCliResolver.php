@@ -28,27 +28,23 @@ class InteractiveCliResolver extends Resolver
         $this->dialog = $dialog;
     }
 
-    /**
-     * Get Required Parameters From Prompt
-     *
-     * @param Command $command
-     */
-    public function resolve(ConfigurableInterface $command)
-    {
+    public function getValues(ConfigurableInterface $command, $exclude = array()) {
         $values = array();
 
         foreach ($this->getVariablesToAskInArray($command->getConfig()) as $key => $var) {
-            $question = sprintf('Entrer the <info>%s (%s)</info> : ', $key, $var);
+            if(false === in_array($var, $exclude)) {
+                $question = sprintf('Entrer the <info>%s (%s)</info> : ', $key, $var);
 
-            if (preg_match('/password|pwd|passwd?/', $key) > 0) {
-                $this->output->write($question);
-                $values[$var] = $this->getAdapter()->exec('stty -echo; read PASSWORD; stty echo; echo $PASSWORD');
-                $this->output->writeln('');
-            } else {
-                $values[$var] = $this->dialog->ask($this->output, $question);
+                if (preg_match('/password|pwd|passwd?/', $key) > 0) {
+                    $this->output->write($question);
+                    $values[$var] = $this->getAdapter()->exec('stty -echo; read PASSWORD; stty echo; echo $PASSWORD');
+                    $this->output->writeln('');
+                } else {
+                    $values[$var] = $this->dialog->ask($this->output, $question);
+                }
             }
         }
 
-        return $this->replaceValuesInRecursiveArray($command->getConfig(), $values);
+        return $values;
     }
 }
