@@ -3,6 +3,8 @@ namespace Rizeway\Anchour\Console\Command;
 
 use Symfony\Component\Console\Command\Command as BaseCommand;
 
+use Rizeway\Anchour\Config\Resolver;
+
 class Command extends BaseCommand
 {
     /**
@@ -38,5 +40,12 @@ class Command extends BaseCommand
     protected function getResolver()
     {
         return $this->resolver;
+    }
+
+    protected function setResolver(Resolver $resolver)
+    {
+        $this->resolver = $resolver;
+
+        return $this;
     }
 }
