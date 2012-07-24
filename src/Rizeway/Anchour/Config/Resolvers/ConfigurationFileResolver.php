@@ -17,6 +17,9 @@ class ConfigurationFileResolver extends Resolver
 
     /**
      * @param \SplFileInfo $file
+     * @param \jubianchi\Adapter\AdapterInterface $adapter
+     *
+     * @throws \RuntimeException
      */
     public function __construct(\SplFileInfo $file, AdapterInterface $adapter = null)
     {
@@ -29,6 +32,11 @@ class ConfigurationFileResolver extends Resolver
         $this->file = $file;
     }
 
+    /**
+     * @param \Rizeway\Anchour\Config\ConfigurableInterface $command
+     *
+     * @return array
+     */
     public function getValues(ConfigurableInterface $command) {
         $values = array();
 

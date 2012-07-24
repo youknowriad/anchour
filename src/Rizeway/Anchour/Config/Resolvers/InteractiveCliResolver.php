@@ -28,20 +28,18 @@ class InteractiveCliResolver extends Resolver
         $this->dialog = $dialog;
     }
 
-    public function getValues(ConfigurableInterface $command, $exclude = array()) {
+    public function getValues(ConfigurableInterface $command) {
         $values = array();
 
         foreach ($this->getVariablesToAskInArray($command->getConfig()) as $key => $var) {
-            if(false === in_array($var, $exclude)) {
-                $question = sprintf('Entrer the <info>%s (%s)</info> : ', $key, $var);
+            $question = sprintf('Entrer the <info>%s (%s)</info> : ', $key, $var);
 
-                if (preg_match('/password|pwd|passwd?/', $key) > 0) {
-                    $this->output->write($question);
-                    $values[$var] = $this->getAdapter()->exec('stty -echo; read PASSWORD; stty echo; echo $PASSWORD');
-                    $this->output->writeln('');
-                } else {
-                    $values[$var] = $this->dialog->ask($this->output, $question);
-                }
+            if (preg_match('/password|pwd|passwd?/', $key) > 0) {
+                $this->output->write($question);
+                $values[$var] = $this->getAdapter()->exec('stty -echo; read PASSWORD; stty echo; echo $PASSWORD');
+                $this->output->writeln('');
+            } else {
+                $values[$var] = $this->dialog->ask($this->output, $question);
             }
         }
 
