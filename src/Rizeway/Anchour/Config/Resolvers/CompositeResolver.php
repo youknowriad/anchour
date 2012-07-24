@@ -14,17 +14,7 @@ use Rizeway\Anchour\Config\Resolver;
 class CompositeResolver extends Resolver
 {
     /**
-     * @var \Symfony\Component\Console\Input\InputInterface
-     */
-    private $input;
-
-    /**
-     * @var \Symfony\Component\Console\Output\OutputInterface
-     */
-    private $output;
-
-    /**
-     * @var \Rizeway\Anchour\Config\Resolver\Resolver[]
+     * @var \Rizeway\Anchour\Config\Resolvers\Resolver[]
      */
     private $resolvers;
 
@@ -37,9 +27,6 @@ class CompositeResolver extends Resolver
     public function __construct(Application $application, InputInterface $input, OutputInterface $output, $adapter = null)
     {
         $this->setAdapter($adapter);
-
-        $this->input = $input;
-        $this->output = $output;
 
         if (($config = $input->getOption('config')) !== null) {
             $this->addResolver(new Resolvers\ConfigurationFileResolver(new \SplFileInfo($config)));
@@ -54,27 +41,60 @@ class CompositeResolver extends Resolver
         }
     }
 
+    /**
+     * @param \Rizeway\Anchour\Config\Resolver $resolver
+     *
+     * @return \Rizeway\Anchour\Config\Resolvers\CompositeResolver
+     */
     public function addResolver(Resolver $resolver) {
         $this->resolvers[] = $resolver;
 
         return $this;
     }
 
-    public function addResolvers(array $resolver) {
-        $this->resolvers = array_merge($resolver, $this->resolvers);
+    /**
+     * @param array $resolvers
+     *
+     * @return \Rizeway\Anchour\Config\Resolvers\CompositeResolver
+     */
+    public function addResolvers(array $resolvers) {
+        $this->resolvers = array_merge($resolvers, $this->resolvers);
 
         return $this;
     }
 
+    /**
+     * @return \Rizeway\Anchour\Config\Resolvers\Resolver[]
+     */
     public function getResolvers() {
         return $this->resolvers;
     }
 
+    /**
+     * @param \Rizeway\Anchour\Config\ConfigurableInterface $command
+     *
+     * @return array
+     */
     public function getValues(ConfigurableInterface $command)
     {
         $values = array();
         foreach($this->getResolvers() as $resolver) {
-            $values = array_merge($values, $resolver->getValues($command, array_keys($values)));
+            $values = array_merge($values, $resolver->getValues($command));
+        }
+
+        return $values;
+    }
+
+    /**
+     * @param \Rizeway\Anchour\Config\ConfigurableInterface $command
+     *
+     * @return array|\mixed[]
+     */
+    public function resolve(ConfigurableInterface $command)
+    {
+        $values = array();
+        foreach($this->getResolvers() as $resolver) {
+            $values = array_merge($values, $resolver->resolve($command));
         }
 
         return $values;

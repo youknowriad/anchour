@@ -16,10 +16,10 @@ class ArgumentCliResolver extends Resolver
     private $input;
 
     /**
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @param \Symfony\Component\Console\Helper\DialogHelper    $dialog
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \jubianchi\Adapter\AdapterInterface $adapter
      */
-    public function __construct(InputInterface $input, $adapter = null)
+    public function __construct(InputInterface $input, AdapterInterface $adapter = null)
     {
         $this->setAdapter($adapter);
 
@@ -29,7 +29,9 @@ class ArgumentCliResolver extends Resolver
     /**
      * Get Required Parameters From Prompt
      *
-     * @param Command $command
+     * @param \Rizeway\Anchour\Config\ConfigurableInterface $command
+     *
+     * @return array
      */
     public function getValues(ConfigurableInterface $command)
     {

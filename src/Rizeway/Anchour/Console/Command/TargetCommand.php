@@ -38,7 +38,7 @@ class TargetCommand extends Command implements ConfigurableInterface
     }
 
     /**
-     * @return array
+     * @return \Rizeway\Anchour\Step\Step[]
      */
     public function getSteps()
     {

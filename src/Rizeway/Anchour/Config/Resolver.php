@@ -29,7 +29,7 @@ abstract class Resolver extends Adaptable implements ResolverInterface
                 $result[$key] = preg_replace_callback(
                     static::VARIABLE_REGEXP,
                     function($matches) use($values) {
-                        return $values[$matches[0]] ?: null;
+                        return isset($values[$matches[0]]) ? $values[$matches[0]] : $matches[0];
                     },
                     $value
                 );
@@ -68,9 +68,14 @@ abstract class Resolver extends Adaptable implements ResolverInterface
      * Get Required Parameters From Prompt
      *
      * @param \Rizeway\Anchour\Config\ConfigurableInterface $command
+     *
+     * @return array
      */
     public function resolve(ConfigurableInterface $command)
     {
-        return $this->replaceValuesInRecursiveArray($command->getConfig(), $this->getValues($command));
+        $values = $this->replaceValuesInRecursiveArray($command->getConfig(), $this->getValues($command));
+        $command->setConfig($values);
+
+        return $values;
     }
 }
