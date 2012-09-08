@@ -8,7 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Rizeway\Anchour\Step\Step;
 
 use jubianchi\Ftp\Ftp;
-use jubianchi\Output\Symfony\ConsoleOutputAdapter;
+use jubianchi\Output\Symfony\Adapter\ConsoleOutputAdapter;
 use Rizeway\Anchour\Step\Definition\Definition;
 
 class StepFtp extends Step
