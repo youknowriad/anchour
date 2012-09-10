@@ -5,6 +5,7 @@ use \Rizeway\Anchour\Config\ResolverInterface;
 
 interface ConfigurableInterface
 {
-    public function getConfig();
-    public function resolveConfiguration(ResolverInterface $resolver);
+    function getConfig();
+    function setConfig(array $config);
+    function resolveConfiguration(ResolverInterface $resolver);
 }

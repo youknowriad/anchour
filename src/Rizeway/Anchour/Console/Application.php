@@ -39,22 +39,19 @@ class Application extends BaseApplication implements AdaptableInterface
 
     public function doRun(InputInterface $input, OutputInterface $output)
     {
-        $exc = null;
         try {
-            $this->initialize($this->initializer);
+            $this->initialize($input);
+
+            return parent::doRun($input, $output);
         } catch (\Exception $exc) {
-            if (null !== $input->getFirstArgument() && 'init' !== $input->getFirstArgument()) {
-                throw $exc;
+            if (null === $input->getFirstArgument() && 'init' !== $input->getFirstArgument()) {
+                $this->renderException($exc, $output);
             }
+
+            parent::doRun($input, $output);
+
+            return $exc->getCode() ?: 255;
         }
-
-        if (null !== $exc) {
-            $this->renderException($exc, $output);
-
-            return 255;
-        }
-
-        return parent::doRun($input, $output);
     }
 
     /**
@@ -79,20 +76,19 @@ class Application extends BaseApplication implements AdaptableInterface
       return $this->adapter;
     }
 
-    protected function initialize()
+    protected function initialize(InputInterface $input)
     {
-        // Checking the anchour config file
-        $anchour_config_file = getcwd().'/.anchour';
-        if (false === $this->getAdapter()->file_exists($anchour_config_file)) {
-            throw new \Exception('The .anchour config files was not found in the current directory');
-        }
-
-        $loader = new Loader($anchour_config_file);
-
-        // Initializing the commands
         $this->add(new InitCommand());
 
-        $this->initializer->initialize($this, $loader);
+        if('init' !== $input->getFirstArgument()) {
+            $anchour_config_file = getcwd().'/.anchour';
+
+            if (false === $this->getAdapter()->file_exists($anchour_config_file)) {
+                throw new \Exception('The .anchour config files was not found in the current directory');
+            }
+
+            $this->initializer->initialize($this, new Loader($anchour_config_file));
+        }
 
         return $this;
     }

@@ -13,8 +13,10 @@ class Resolver extends test
                 'foo' => ($foo = uniqid()),
                 'bar' => '%bar%',
                 'arr' => array(
-                    'foo' => 'another %foo%'
-                )
+                    'foo' => 'another %foo%',
+                    'bar' => 'don\'t replace me \%bar\%'
+                ),
+                'boo' => 'don\'t replace me \%foo\%'
             ))
             ->and($values = array(
                 '%bar%' => ($bar = uniqid()),
@@ -25,8 +27,10 @@ class Resolver extends test
                     'foo' => $foo,
                     'bar' => $bar,
                     'arr' => array(
-                        'foo' => 'another ' . $otherFoo
-                    )
+                        'foo' => 'another ' . $otherFoo,
+                        'bar' => 'don\'t replace me %bar%'
+                    ),
+                    'boo' => 'don\'t replace me %foo%'
                 ))
         ;
     }
@@ -40,7 +44,8 @@ class Resolver extends test
                 'bar' => '%bar%',
                 'arr' => array(
                     'foo' => 'another %foo%'
-                )
+                ),
+                'boo' => 'don\'t match me \%boo\%'
             ))
             ->then()
                 ->array($object->getVariablesToAskInArray($array))->isEqualTo(array(

@@ -11,12 +11,15 @@ use Rizeway\Anchour\Config\Resolver;
 class ConfigurationFileResolver extends Resolver
 {
     /**
-     * @var array
+     * @var \SplFileInfo
      */
-    private $config;
+    private $file;
 
     /**
-     * @param string $filename
+     * @param \SplFileInfo $file
+     * @param \jubianchi\Adapter\AdapterInterface $adapter
+     *
+     * @throws \RuntimeException
      */
     public function __construct(\SplFileInfo $file, AdapterInterface $adapter = null)
     {
@@ -26,24 +29,29 @@ class ConfigurationFileResolver extends Resolver
             throw new \RuntimeException(sprintf('File %s does not exist', $file->getRealPath()));
         }
 
-        switch ($file->getExtension()) {
-            case 'yml':
-                $this->config = Yaml::parse($file->getRealPath());
-                break;
-            case 'ini':
-                $this->config = $this->getAdapter()->parse_ini_file($file->getRealPath());
-                break;
-            case 'json':
-                $this->config = json_decode($this->getAdapter()->file_get_contents($file->getRealPath()), true);
-                break;
-        }
+        $this->file = $file;
     }
 
     /**
-     * @param Command $configurable
+     * @param \Rizeway\Anchour\Config\ConfigurableInterface $command
+     *
+     * @return array
      */
-    public function resolve(ConfigurableInterface $configurable)
-    {
-        return $this->replaceValuesInRecursiveArray($configurable->getConfig(), $this->config);
+    public function getValues(ConfigurableInterface $command) {
+        $values = array();
+
+        switch ($this->file->getExtension()) {
+            case 'yml':
+                $values = Yaml::parse($this->file->getRealPath());
+                break;
+            case 'ini':
+                $values = $this->getAdapter()->parse_ini_file($this->file->getRealPath());
+                break;
+            case 'json':
+                $values = json_decode($this->getAdapter()->file_get_contents($this->file->getRealPath()), true);
+                break;
+        }
+
+        return (array)$values;
     }
 }

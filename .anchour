@@ -1,6 +1,13 @@
 anchour:
-    commands:
+    connections:
+        anchour_ftp_server:
+            type: "ftp"
+            options:
+                host: %ftp_host%
+                username: %ftp_username%
+                password: %ftp_password%
 
+    commands:
         phar:
             description: "Build anchour phar"
 
@@ -20,3 +27,37 @@ anchour:
                         stub: "src/Rizeway/Anchour/Phar/stub.php"
                         name: "anchour.phar"
                         chmod: true
+
+
+        deploy:
+            description: "Build and Transfer anchour phar to an FTP server"
+
+            steps:
+                -
+                    type: "cli"
+                    options:
+                        commands:
+                            - wget http://getcomposer.org/composer.phar
+                            - php composer.phar update
+                            - rm composer.phar
+                            - mkdir -p build
+                -
+                    type: "cliPhar"
+                    options:
+                        directory: "."
+                        regexp: "^[^\.].*/bin/.*|src/.*|vendor/(?!mageekguy).*|anchour\.php"
+                        stub: "src/Rizeway/Anchour/Phar/stub.php"
+                        name: "build/anchour.phar"
+                        chmod: true
+                -
+                    type: "cli"
+                    options:
+                        commands:
+                            - chmod +x build/anchour.phar
+                -
+                    type: "ftp"
+                    options:
+                        local_dir: "build"
+                        remote_dir: "public_html"
+                    connections:
+                        connection: "anchour_ftp_server"

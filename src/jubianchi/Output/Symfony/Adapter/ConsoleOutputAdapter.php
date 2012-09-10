@@ -2,6 +2,7 @@
 namespace jubianchi\Output\Symfony\Adapter;
 
 use Symfony\Component\Console\Output\ConsoleOutput;
+use jubianchi\Output\OutputInterface;
 
 class ConsoleOutputAdapter implements OutputInterface
 {
@@ -12,8 +13,8 @@ class ConsoleOutputAdapter implements OutputInterface
         $this->output = $output;
     }
 
-    public function __call($name, $args)
+    public function writeln($message)
     {
-        return call_user_func_array(array($this->output, $name), $args);
+        return $this->output->writeln($message);
     }
 }

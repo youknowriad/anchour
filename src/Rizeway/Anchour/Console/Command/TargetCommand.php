@@ -16,6 +16,15 @@ class TargetCommand extends Command implements ConfigurableInterface
      */
     private $steps = array();
 
+    public function __construct($name = null)
+    {
+        parent::__construct($name);
+
+        $this
+            ->addArgument('var', \Symfony\Component\Console\Input\InputArgument::IS_ARRAY)
+        ;
+    }
+
     /**
      * @param array $config
      *
@@ -29,7 +38,7 @@ class TargetCommand extends Command implements ConfigurableInterface
     }
 
     /**
-     * @return array
+     * @return \Rizeway\Anchour\Step\Step[]
      */
     public function getSteps()
     {
@@ -38,12 +47,9 @@ class TargetCommand extends Command implements ConfigurableInterface
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->resolver = new Resolvers\InteractiveCliResolver($output, $this->getApplication()->getHelperSet()->get('dialog'));
-        if (($config = $input->getOption('config')) !== null) {
-            $this->resolver = new Resolvers\ConfigurationFileResolver(new \SplFileInfo($config));
-        }
+        $this->setResolver(new Resolvers\CompositeResolver($this->getApplication(), $input, $output));
 
-        $this->resolveConfiguration($this->resolver);
+        $this->resolveConfiguration($this->getResolver());
 
         $runner = new StepRunner($this->getSteps());
         $runner->run($input, $output);

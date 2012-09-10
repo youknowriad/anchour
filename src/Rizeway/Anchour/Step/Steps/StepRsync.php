@@ -59,12 +59,18 @@ class StepRsync extends Step
         $output->writeln('Source : <info>' . $source . '</info>');
         $output->writeln('Destination : <info>' . $destination . '</info>');
 
+        $sshOpt = null;
+        if(false === $this->getAdapter()->function_exists('posix_isatty') || false === @$this->getAdapter()->posix_isatty(STDOUT)) {
+            $sshOpt =  ' -o \"NumberOfPasswordPrompts 0\"';
+        }
+
         $status = 0;
         $this->getAdapter()->exec(
           sprintf(
-            'rsync %s -e "ssh -i %s" %s %s 2>&1',
+            'rsync %s -e "ssh -i %s%s" %s %s 2>&1',
             $this->getOption('cli_args'),
             $this->getOption('key_file'),
+            $sshOpt,
             $source,
             $destination
           ),

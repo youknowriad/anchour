@@ -28,13 +28,7 @@ class InteractiveCliResolver extends Resolver
         $this->dialog = $dialog;
     }
 
-    /**
-     * Get Required Parameters From Prompt
-     *
-     * @param Command $command
-     */
-    public function resolve(ConfigurableInterface $command)
-    {
+    public function getValues(ConfigurableInterface $command) {
         $values = array();
 
         foreach ($this->getVariablesToAskInArray($command->getConfig()) as $key => $var) {
@@ -49,6 +43,6 @@ class InteractiveCliResolver extends Resolver
             }
         }
 
-        return $this->replaceValuesInRecursiveArray($command->getConfig(), $values);
+        return $values;
     }
 }
