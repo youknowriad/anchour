@@ -17,8 +17,6 @@ class StepCli extends Step
 
     public function run(InputInterface $input, OutputInterface $output)
     {
-        foreach ($this->getOption('commands') as $command) {
-            $this->getAdapter()->passthru($command);
-        }
+        $this->getAdapter()->passthru(implode(PHP_EOL, $this->getOption('commands')));
     }
 }
