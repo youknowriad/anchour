@@ -32,7 +32,7 @@ abstract class Connection implements ConnectionInterface, ConfigurableInterface
 
     public function resolveConfiguration(ResolverInterface $resolver)
     {
-        $this->setConfig($resolver->resolve($this));
+        return $resolver->resolve($this);
     }
 
     /**

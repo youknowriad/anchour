@@ -9,6 +9,8 @@ abstract class Resolver extends Adaptable implements ResolverInterface
 {
     const VARIABLE_REGEXP = '/%([a-zA-Z][a-zA-Z0-9_]*)%/';
 
+    protected $resolved_values = array();
+
     /**
      * Replace all %option% in the $array with their values in $values
      *
@@ -56,7 +58,9 @@ abstract class Resolver extends Adaptable implements ResolverInterface
                 $variables += $this->getVariablesToAskInArray($value);
             } elseif (preg_match_all(static::VARIABLE_REGEXP, $value, $matches)) {
                 foreach($matches[0] as $key => $match) {
-                    $variables[$matches[1][$key]] = $match;
+                    if (!isset($this->resolved_values[$matches[1][$key]])) {
+                        $variables[$matches[1][$key]] = $match;
+                    }
                 }
             }
         }
@@ -73,9 +77,20 @@ abstract class Resolver extends Adaptable implements ResolverInterface
      */
     public function resolve(ConfigurableInterface $command)
     {
-        $values = $this->replaceValuesInRecursiveArray($command->getConfig(), $this->getValues($command));
+        $resolved_values = $this->getValues($command) + $this->resolved_values;
+        $values = $this->replaceValuesInRecursiveArray($command->getConfig(), $resolved_values);
         $command->setConfig($values);
 
-        return $values;
+        return $resolved_values;
+    }
+
+    public function setResolvedValues($resolved_values)
+    {
+        $this->resolved_values = $resolved_values;
+    }
+
+    public function getResolvedValues()
+    {
+        return $this->resolved_values;
     }
 }

@@ -19,6 +19,7 @@ class Application extends BaseApplication implements AdaptableInterface
      * @var \Rizeway\Anchour\Console\Initializer
      */
     protected $initializer;
+    protected $resolved_values = array();
 
     /**
      * @var \jubianchi\Adapter\AdapterInterface
@@ -91,5 +92,15 @@ class Application extends BaseApplication implements AdaptableInterface
         }
 
         return $this;
+    }
+
+    public function setResolvedValues($values)
+    {
+        $this->resolved_values = $values;
+    }
+
+    public function getResolvedValues()
+    {
+        return $this->resolved_values;
     }
 }

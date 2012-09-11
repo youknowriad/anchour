@@ -14,7 +14,7 @@ class StepRunner extends test
             ))
             ->and($output = new \mock\Symfony\Component\Console\Output\OutputInterface())
             ->and($input = new \mock\Symfony\Component\Console\Input\InputInterface())
-            ->and($object = new \Rizeway\Anchour\Step\StepRunner($steps))
+            ->and($object = new \Rizeway\Anchour\Step\StepRunner(null, $steps))
             ->then()
                 ->variable($object->run($input, $output))->isNull()
                 ->mock($step)->call('run')->withArguments($input, $output)->once()

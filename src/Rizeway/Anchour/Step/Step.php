@@ -145,13 +145,15 @@ abstract class Step implements StepInterface, ConfigurableInterface
 
     public function resolveConfiguration(ResolverInterface $resolver)
     {
-        $resolver->resolve($this);
+        $values = $resolver->resolve($this);
 
         foreach ($this->connections as $connection) {
             if (null !== $connection) {
-                $connection->resolveConfiguration($resolver);
+                $values += $connection->resolveConfiguration($resolver);
             }
         }
+
+        return $values;
     }
 
     /**

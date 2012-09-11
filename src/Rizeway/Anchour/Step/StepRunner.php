@@ -14,11 +14,14 @@ class StepRunner
      */
     protected $steps;
 
+    protected $application;
+
     /**
      * @param Step[] $steps
      */
-    public function __construct(array $steps)
+    public function __construct($application, array $steps)
     {
+        $this->application = $application;
         $this->steps = $steps;
     }
 
@@ -28,6 +31,10 @@ class StepRunner
     public function run(InputInterface $input, OutputInterface $output)
     {
         foreach ($this->steps as $step) {
+            if ($step instanceof \Rizeway\Anchour\Step\StepApplicationAware) {
+                $step->setApplication($this->application);
+            }
+
             $step->run($input, $output);
         }
     }

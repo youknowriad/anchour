@@ -29,15 +29,21 @@ class CompositeResolver extends Resolver
         $this->setAdapter($adapter);
 
         if (($config = $input->getOption('config')) !== null) {
-            $this->addResolver(new Resolvers\ConfigurationFileResolver(new \SplFileInfo($config)));
+            $resolver = new Resolvers\ConfigurationFileResolver(new \SplFileInfo($config));
+            $resolver->setResolvedValues($this->getResolvedValues());
+            $this->addResolver($resolver);
         }
 
         if (0 < count($input->getArgument('var'))) {
-            $this->addResolver(new Resolvers\ArgumentCliResolver($input));
+            $resolver = new Resolvers\ArgumentCliResolver($input);
+            $resolver->setResolvedValues($this->getResolvedValues());
+            $this->addResolver($resolver);
         }
 
         if ($input->isInteractive()) {
-            $this->addResolver(new Resolvers\InteractiveCliResolver($output, $application->getHelperSet()->get('dialog')));
+            $resolver = new Resolvers\InteractiveCliResolver($output, $application->getHelperSet()->get('dialog'));
+            $resolver->setResolvedValues($this->getResolvedValues());
+            $this->addResolver($resolver);
         }
     }
 
@@ -98,5 +104,14 @@ class CompositeResolver extends Resolver
         }
 
         return $values;
+    }
+
+    public function setResolvedValues($values)
+    {
+        parent::setResolvedValues($values);
+
+        foreach ($this->getResolvers() as $resolver) {
+            $resolver->setResolvedValues($this->getResolvedValues());
+        }
     }
 }

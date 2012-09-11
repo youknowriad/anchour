@@ -47,18 +47,22 @@ class TargetCommand extends Command implements ConfigurableInterface
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->setResolver(new Resolvers\CompositeResolver($this->getApplication(), $input, $output));
+        $this->setResolver(new Resolvers\CompositeResolver($this->getApplication(), $input, $output));        
+        $this->getResolver()->setResolvedValues($this->getApplication()->getResolvedValues());
+        $values = $this->resolveConfiguration($this->getResolver());
+        $this->getApplication()->setResolvedValues($values);
 
-        $this->resolveConfiguration($this->getResolver());
-
-        $runner = new StepRunner($this->getSteps());
+        $runner = new StepRunner($this->getApplication(), $this->getSteps());
         $runner->run($input, $output);
     }
 
     public function resolveConfiguration(ResolverInterface $resolver)
     {
+        $values = array();
         foreach ($this->getSteps() as $step) {
-            $step->resolveConfiguration($resolver);
+            $values += $step->resolveConfiguration($resolver);
         }
+
+        return $values;
     }
 }

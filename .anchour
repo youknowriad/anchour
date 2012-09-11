@@ -19,6 +19,10 @@ anchour:
                             - wget http://getcomposer.org/composer.phar
                             - php composer.phar update
                             - rm composer.phar
+                -   
+                    type: "echo"
+                    options:
+                        message: %message%
                 -
                     type: "cliPhar"
                     options:
@@ -34,21 +38,13 @@ anchour:
 
             steps:
                 -
-                    type: "cli"
+                    type: "command"
                     options:
-                        commands:
-                            - wget http://getcomposer.org/composer.phar
-                            - php composer.phar update
-                            - rm composer.phar
-                            - mkdir -p build
-                -
-                    type: "cliPhar"
+                        command: phar
+                -   
+                    type: "echo"
                     options:
-                        directory: "."
-                        regexp: "^[^\.].*/bin/.*|src/.*|vendor/(?!mageekguy).*|anchour\.php"
-                        stub: "src/Rizeway/Anchour/Phar/stub.php"
-                        name: "build/anchour.phar"
-                        chmod: true
+                        message: %message%
                 -
                     type: "cli"
                     options:

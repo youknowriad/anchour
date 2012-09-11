@@ -21,8 +21,8 @@ class InteractiveCliResolver extends test {
             ->and($dialog->getMockController()->ask = $value = uniqid())
             ->then()
                 ->array($object->resolve($configurable))->isEqualTo(array(
-                    'key' => $value,
-                    'otherKey' => 'Another ' . $value
+                    'foo' => $value,
+                    'bar' => $value
                 ))
                 ->mock($dialog)
                     ->call('ask')
