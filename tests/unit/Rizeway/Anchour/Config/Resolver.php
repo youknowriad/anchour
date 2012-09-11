@@ -19,8 +19,8 @@ class Resolver extends test
                 'boo' => 'don\'t replace me \%foo\%'
             ))
             ->and($values = array(
-                '%bar%' => ($bar = uniqid()),
-                '%foo%' => ($otherFoo = uniqid())
+                'bar' => ($bar = uniqid()),
+                'foo' => ($otherFoo = uniqid())
             ))
             ->then()
                 ->array($object->replaceValuesInRecursiveArray($array, $values))->isEqualTo(array(

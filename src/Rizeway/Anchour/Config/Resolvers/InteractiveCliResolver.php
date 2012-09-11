@@ -36,10 +36,10 @@ class InteractiveCliResolver extends Resolver
 
             if (preg_match('/password|pwd|passwd?/', $key) > 0) {
                 $this->output->write($question);
-                $values[$var] = $this->getAdapter()->exec('stty -echo; read PASSWORD; stty echo; echo $PASSWORD');
+                $values[$key] = $this->getAdapter()->exec('stty -echo; read PASSWORD; stty echo; echo $PASSWORD');
                 $this->output->writeln('');
             } else {
-                $values[$var] = $this->dialog->ask($this->output, $question);
+                $values[$key] = $this->dialog->ask($this->output, $question);
             }
         }
 

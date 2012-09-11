@@ -7,7 +7,7 @@ use Rizeway\Anchour\Config\ConfigurableInterface;
 
 abstract class Resolver extends Adaptable implements ResolverInterface
 {
-    const VARIABLE_REGEXP = '/%([a-zA-Z]+[a-zA-Z0-9_]*)%/';
+    const VARIABLE_REGEXP = '/%([a-zA-Z][a-zA-Z0-9_]*)%/';
 
     /**
      * Replace all %option% in the $array with their values in $values
@@ -29,7 +29,7 @@ abstract class Resolver extends Adaptable implements ResolverInterface
                 $result[$key] = preg_replace_callback(
                     static::VARIABLE_REGEXP,
                     function($matches) use($values) {
-                        return isset($values[$matches[0]]) ? $values[$matches[0]] : $matches[0];
+                        return isset($values[$matches[1]]) ? $values[$matches[1]] : $matches[0];
                     },
                     $value
                 );

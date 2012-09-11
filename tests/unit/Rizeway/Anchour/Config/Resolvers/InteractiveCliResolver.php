@@ -32,8 +32,8 @@ class InteractiveCliResolver extends test {
                     ->call('replaceValuesInRecursiveArray')->withArguments(
                         $config, 
                         array(
-                            '%foo%' => $value,
-                            '%bar%' => $value
+                            'foo' => $value,
+                            'bar' => $value
                         )
                     )->once()
         ;
