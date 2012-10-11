@@ -1,6 +1,6 @@
 {
-    "name": "anchour",
-    "type": "script",
+    "name": "rizeway/anchour",
+    "type": "library",
     "description": "Toolkit for deploying web applications",
     "keywords": ["web", "deploy", "php"],
     "license": "MIT",
@@ -29,7 +29,10 @@
         "symfony/console": "2.0.14",
         "symfony/options-resolver": "*",
         "symfony/config": "*",
-        "yohang/oossh": "*",
+        "yohang/oossh": "*"
+    },
+    "require-dev": {
         "mageekguy/atoum": "*"
-    }
+    },
+    "bin": ["bin/anchour"]
 }
