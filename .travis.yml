@@ -3,5 +3,5 @@ php:
   - 5.3
 before_script: 
   - wget http://getcomposer.org/composer.phar
-  - php composer.phar install
+  - php composer.phar install --dev
 script: ./bin/anchour-travis
