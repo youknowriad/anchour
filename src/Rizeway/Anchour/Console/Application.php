@@ -8,6 +8,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 use Rizeway\Anchour\Config\Loader;
 use Rizeway\Anchour\Console\Command\InitCommand;
+use Rizeway\Anchour\Exception\AnchourNotFoundException;
 
 use jubianchi\Adapter\AdaptableInterface;
 use jubianchi\Adapter\AdapterInterface;
@@ -49,7 +50,9 @@ class Application extends BaseApplication implements AdaptableInterface
                 $this->renderException($exc, $output);
             }
 
-            parent::doRun($input, $output);
+            if ($exc instanceof AnchourNotFoundException) {
+                parent::doRun($input, $output);
+            }
 
             return $exc->getCode() ?: 255;
         }
@@ -85,7 +88,7 @@ class Application extends BaseApplication implements AdaptableInterface
             $anchour_config_file = getcwd().'/.anchour';
 
             if (false === $this->getAdapter()->file_exists($anchour_config_file)) {
-                throw new \Exception('The .anchour config files was not found in the current directory');
+                throw new AnchourNotFoundException('The .anchour config files was not found in the current directory');
             }
 
             $this->initializer->initialize($this, new Loader($anchour_config_file));
