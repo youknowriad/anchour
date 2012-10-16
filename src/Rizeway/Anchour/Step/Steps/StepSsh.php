@@ -41,7 +41,7 @@ class StepSsh extends Step
             $output->write($stdio);
 
             if ('' !== $stderr) {
-                throw new \RuntimeException($stderr);
+                $output->writeln('<comment>'.$stderr.'</comment>');
             }
         });
     }
