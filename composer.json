@@ -16,12 +16,6 @@
             "homepage": "http://jubianchi.fr"
         }
     ],
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/jubianchi/OOSSH.git"
-        }
-    ],
     "autoload": {
         "psr-0": {
             "Rizeway\\Anchour": "src/",
@@ -35,7 +29,7 @@
         "symfony/console": "*",
         "symfony/options-resolver": "*",
         "symfony/config": "*",
-        "yohang/oossh": "dev-master"
+        "youknowriad/oossh": "dev-master"
     },
     "require-dev": {
         "mageekguy/atoum": "*"
