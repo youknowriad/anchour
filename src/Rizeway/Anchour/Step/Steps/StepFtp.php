@@ -38,8 +38,8 @@ class StepFtp extends Step
         $connection = $this->getConnection('connection');
         $connection->connect($output);
         $connection->setOutput(new ConsoleOutputAdapter($output));
-        $local_dir = (strpos($this->getOption('local_dir'), '/') === 0) ? getcwd() . '/' . $this->getOption('local_dir') : $this->getOption('local_dir');
-        $connection->uploadDirectory(getcwd() . '/' . $this->getOption('local_dir'), $this->getOption('remote_dir'));
+        $local_dir = strpos($this->getOption('local_dir'), '/') === 0 ? $this->getOption('local_dir') : getcwd() . '/' . $this->getOption('local_dir');
+        $connection->uploadDirectory($local_dir, $this->getOption('remote_dir'));
 
         error_reporting($level);
     }

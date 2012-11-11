@@ -46,9 +46,7 @@ class Application extends BaseApplication implements AdaptableInterface
 
             return parent::doRun($input, $output);
         } catch (\Exception $exc) {
-            if (null === $input->getFirstArgument() && 'init' !== $input->getFirstArgument()) {
-                $this->renderException($exc, $output);
-            }
+            $this->renderException($exc, $output);
 
             if ($exc instanceof AnchourNotFoundException) {
                 parent::doRun($input, $output);
