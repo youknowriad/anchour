@@ -16,6 +16,7 @@ anchour:
                     type: "cli"
                     options:
                         commands:
+                            - rm composer.phar*
                             - wget http://getcomposer.org/composer.phar
                             - php composer.phar update
                             - rm composer.phar
@@ -46,6 +47,6 @@ anchour:
                     type: "ftp"
                     options:
                         local_dir: "build"
-                        remote_dir: "public_html"
+                        remote_dir: %destination_dir%
                     connections:
                         connection: "anchour_ftp_server"
