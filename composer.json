@@ -32,7 +32,7 @@
         "youknowriad/oossh": "dev-master"
     },
     "require-dev": {
-        "mageekguy/atoum": "*"
+        "atoum/atoum": "*"
     },
     "bin": ["bin/anchour"]
 }
