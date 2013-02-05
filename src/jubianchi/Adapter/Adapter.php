@@ -21,4 +21,9 @@ class Adapter implements AdapterInterface
     {
         return exec($command, $output, $status);
     }
+
+    public function passthru($command, &$status = null)
+    {
+        return passthru($command, $status);
+    }
 }

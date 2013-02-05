@@ -30,12 +30,16 @@ class StepRunner
      */
     public function run(InputInterface $input, OutputInterface $output)
     {
+        $status = 0;
+
         foreach ($this->steps as $step) {
             if ($step instanceof \Rizeway\Anchour\Step\StepApplicationAware) {
                 $step->setApplication($this->application);
             }
 
-            $step->run($input, $output);
+            $status += $step->run($input, $output);
         }
+
+        return $status;
     }
 }

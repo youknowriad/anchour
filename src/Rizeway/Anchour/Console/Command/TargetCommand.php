@@ -53,7 +53,7 @@ class TargetCommand extends Command implements ConfigurableInterface
         $this->getApplication()->setResolvedValues($values);
 
         $runner = new StepRunner($this->getApplication(), $this->getSteps());
-        $runner->run($input, $output);
+        return $runner->run($input, $output);
     }
 
     public function resolveConfiguration(ResolverInterface $resolver)
