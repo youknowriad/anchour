@@ -28,14 +28,12 @@ class StepGit extends StepSsh
             $this->exec(sprintf('rm -rf %s', $this->getOption('remote_dir')), $output);
         }
 
-        $options = array(
-            $this->getOption('repository'),
-            $this->getOption('remote_dir'),
-        );
-
+        $options = array();
         if (false !== $this->getOption('depth')) {
-            $options[] = sprintf('--depth=%d', $this->getOption('depth'));
+            $options[] = sprintf('--depth %d', $this->getOption('depth'));
         }
+        $options[] = $this->getOption('repository');
+        $options[] = $this->getOption('remote_dir');
 
         $this->exec(sprintf('git clone %s', implode(' ', $options)), $output);
 
