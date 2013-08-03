@@ -29,7 +29,7 @@ class StepGit extends StepSsh
         }
 
         $options = array();
-        if (false !== $this->getOption('depth')) {
+        if ($this->getOption('depth')) {
             $options[] = sprintf('--depth %d', $this->getOption('depth'));
         }
         $options[] = $this->getOption('repository');
