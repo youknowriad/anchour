@@ -19,6 +19,7 @@ class StepGit extends StepSsh
         $this->addOption('clean_scm', Definition::TYPE_OPTIONAL, true);
         $this->addOption('remove_existing', Definition::TYPE_OPTIONAL, false);
         $this->addOption('commands', Definition::TYPE_OPTIONAL, array());
+        $this->addOption('depth', Definition::TYPE_OPTIONAL, false);
     }
 
     public function run(InputInterface $input, OutputInterface $output)
@@ -27,7 +28,14 @@ class StepGit extends StepSsh
             $this->exec(sprintf('rm -rf %s', $this->getOption('remote_dir')), $output);
         }
 
-        $this->exec(sprintf('git clone %s %s', $this->getOption('repository'), $this->getOption('remote_dir')), $output);
+        $options = array();
+        if ($this->getOption('depth')) {
+            $options[] = sprintf('--depth %d', $this->getOption('depth'));
+        }
+        $options[] = $this->getOption('repository');
+        $options[] = $this->getOption('remote_dir');
+
+        $this->exec(sprintf('git clone %s', implode(' ', $options)), $output);
 
         if (true === $this->getOption('clean_scm')) {
             $this->exec(sprintf('rm -rf %s/.git', $this->getOption('remote_dir')), $output);
