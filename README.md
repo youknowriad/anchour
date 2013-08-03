@@ -152,6 +152,7 @@ This allows you to clone a GIT repository in a remote server using a SSH connect
         remote_dir: "tmp/minitwitter"
         clean_scm: true
         remove_existing: true
+        depth: 1
     connections:
         connection: "MySSH"
 
