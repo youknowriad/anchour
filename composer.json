@@ -22,17 +22,16 @@
             "jubianchi": "src/"
         }
     },
-    "minimum-stability": "dev",
     "require": {
         "php": ">=5.3.2",
         "symfony/yaml": "2.*",
-        "symfony/console": "2.2",
+        "symfony/console": "2.2.*",
         "symfony/options-resolver": "*",
         "symfony/config": "*",
-        "youknowriad/oossh": "dev-master"
+        "youknowriad/oossh": "dev-master@dev"
     },
     "require-dev": {
-        "atoum/atoum": "*"
+        "atoum/atoum": "dev-master"
     },
     "bin": ["bin/anchour"]
 }
