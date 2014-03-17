@@ -4,6 +4,7 @@
     "description": "Toolkit for deploying web applications",
     "keywords": ["web", "deploy", "php"],
     "license": "MIT",
+    "version": "1.0.0",
     "authors": [
         {
             "name": "Riad Benguella",
