@@ -210,8 +210,17 @@ You may want to commit your .anchour file without some informations like passwor
                     connections:
                         connection: MyFTP
 
+There is several way to set those variables : *command line arguments* > *config file* > *environment variable* and finally *interactive prompt*
+
+```
+anchour.phar my_host=domain.tld
+anchour.phar -c config.json
+my_host=domain.tld anchour.phar
+```
 
 When you run the command deploy (described above), anchour will detect all the required variables for your command, asks you their values, and use them in the right places (example: %my_username% will be replaced by the value of the variable my_username)
+
+
 
 Contribute
 ==========

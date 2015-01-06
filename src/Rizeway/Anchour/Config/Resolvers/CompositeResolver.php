@@ -40,6 +40,10 @@ class CompositeResolver extends Resolver
             $this->addResolver($resolver);
         }
 
+        $resolver = new Resolvers\EnvironmentResolver();
+        $resolver->setResolvedValues($this->getResolvedValues());
+        $this->addResolver($resolver);
+
         if ($input->isInteractive()) {
             $resolver = new Resolvers\InteractiveCliResolver($output, $application->getHelperSet()->get('dialog'));
             $resolver->setResolvedValues($this->getResolvedValues());
