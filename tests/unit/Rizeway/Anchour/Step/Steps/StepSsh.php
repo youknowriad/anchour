@@ -27,7 +27,7 @@ class StepSsh extends test
                     new \Rizeway\Anchour\Step\Steps\StepSsh(array(), array(), $adapter);
                 })
                 ->isInstanceOf('\\Symfony\\Component\\OptionsResolver\\Exception\\MissingOptionsException')
-                ->hasMessage('The required option "commands" is  missing.')
+                ->hasMessage('The required option "commands" is missing.')
         ;
     }
 }

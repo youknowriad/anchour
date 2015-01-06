@@ -32,7 +32,7 @@ class StepRsync extends test
                     new \Rizeway\Anchour\Step\Steps\StepRsync(array(), array());
                 })
                 ->isInstanceOf('\\Symfony\\Component\\OptionsResolver\\Exception\\MissingOptionsException')
-                ->hasMessage('The required option "key_file" is  missing.')
+                ->hasMessage('The required option "key_file" is missing.')
         ;
     }
 

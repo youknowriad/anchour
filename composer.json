@@ -32,7 +32,7 @@
         "youknowriad/oossh": "dev-master@dev"
     },
     "require-dev": {
-        "atoum/atoum": "dev-master"
+        "atoum/atoum": "~1.2"
     },
     "bin": ["bin/anchour"]
 }

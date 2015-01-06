@@ -14,7 +14,7 @@ class StepEcho extends test
                 new \Rizeway\Anchour\Step\Steps\StepEcho(array(), array());
             })
             ->isInstanceOf('\\Symfony\\Component\\OptionsResolver\\Exception\\MissingOptionsException')
-            ->hasMessage('The required option "message" is  missing.')
+            ->hasMessage('The required option "message" is missing.')
         ;
     }
 
