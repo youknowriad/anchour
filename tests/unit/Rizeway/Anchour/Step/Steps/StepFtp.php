@@ -31,7 +31,7 @@ class StepFtp extends test
                     );
                 })
                 ->isInstanceOf('\\Symfony\\Component\\OptionsResolver\\Exception\\MissingOptionsException')
-                ->hasMessage('The required option "connection" is  missing.')
+                ->hasMessage('The required option "connection" is missing.')
 
                 ->object(
                     new \Rizeway\Anchour\Step\Steps\StepFtp(array(
